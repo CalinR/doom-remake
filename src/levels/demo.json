@@ -1,7 +1,9 @@
 [
     {
         "sector_id": 0,
-        "walls": [
+        "floor": 0,
+        "ceiling": 20,
+        "vertices": [
             {
                 "x": 20,
                 "y": 50
@@ -38,7 +40,9 @@
     },
     {
         "sector_id": 1,
-        "walls": [
+        "floor": 0,
+        "ceiling": 20,
+        "vertices": [
             {
                 "x": 180,
                 "y": 50
@@ -59,7 +63,9 @@
     },
     {
         "sector_id": 2,
-        "walls": [
+        "floor": 0,
+        "ceiling": 20,
+        "vertices": [
             {
                 "x": 300,
                 "y": 50

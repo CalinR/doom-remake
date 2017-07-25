@@ -5,12 +5,11 @@ import {Camera} from 'software-renderer'
 
 export default class Game {
     constructor(){
-        this.player = new Player({ x: 100, y: 100, controls: { forward: 'ArrowUp', backward: 'ArrowDown', left: 'ArrowLeft', right: 'ArrowRight' } });
+        this.player = new Player({ x: 100, y: 100, z: 6, rotation: 180, controls: { forward: 'ArrowUp', backward: 'ArrowDown', left: 'ArrowLeft', right: 'ArrowRight' } });
         this.mapCanvas = document.getElementById('map');
         this.mapContext = this.mapCanvas.getContext('2d');
         this.level = loadLevel('demo');
-        this.camera = new Camera({ x: this.player.x, y: this.player.y, world: this.level, element: document.getElementById('camera') });
-        this.camera.render();
+        this.camera = new Camera({ parent: this.player, world: this.level, element: document.getElementById('camera') });
         this.loop();
     }
 
@@ -19,6 +18,7 @@ export default class Game {
         this.player.update();
         this.drawMap();
         this.drawPlayer();
+        this.camera.render();
         window.requestAnimationFrame(() => this.loop());
     }
 
@@ -27,16 +27,16 @@ export default class Game {
         this.mapContext.save();
         this.mapContext.beginPath();
         for(const sector of this.level){
-            for(const [index, wall] of sector.walls.entries()){
+            for(const [index, vertex] of sector.vertices.entries()){
                 if(index === 0){
-                    this.mapContext.moveTo(wall.x, wall.y);
+                    this.mapContext.moveTo(vertex.x, vertex.y);
                 }
                 else {
                     this.mapContext.strokeStyle = 'black';
-                    this.mapContext.lineTo(wall.x, wall.y);
+                    this.mapContext.lineTo(vertex.x, vertex.y);
                 }
             }
-            this.mapContext.lineTo(sector.walls[0].x, sector.walls[0].y);
+            this.mapContext.lineTo(sector.vertices[0].x, sector.vertices[0].y);
             this.mapContext.stroke();
         }
         this.mapContext.closePath();

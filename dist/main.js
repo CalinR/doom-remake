@@ -160,12 +160,11 @@ var Game = function () {
     function Game() {
         _classCallCheck(this, Game);
 
-        this.player = new _Player2.default({ x: 100, y: 100, controls: { forward: 'ArrowUp', backward: 'ArrowDown', left: 'ArrowLeft', right: 'ArrowRight' } });
+        this.player = new _Player2.default({ x: 100, y: 100, z: 6, rotation: 180, controls: { forward: 'ArrowUp', backward: 'ArrowDown', left: 'ArrowLeft', right: 'ArrowRight' } });
         this.mapCanvas = document.getElementById('map');
         this.mapContext = this.mapCanvas.getContext('2d');
         this.level = (0, _loadLevel2.default)('demo');
-        this.camera = new _softwareRenderer.Camera({ x: this.player.x, y: this.player.y, world: this.level, element: document.getElementById('camera') });
-        this.camera.render();
+        this.camera = new _softwareRenderer.Camera({ parent: this.player, world: this.level, element: document.getElementById('camera') });
         this.loop();
     }
 
@@ -178,6 +177,7 @@ var Game = function () {
             this.player.update();
             this.drawMap();
             this.drawPlayer();
+            this.camera.render();
             window.requestAnimationFrame(function () {
                 return _this.loop();
             });
@@ -200,16 +200,16 @@ var Game = function () {
                     var _iteratorError2 = undefined;
 
                     try {
-                        for (var _iterator2 = sector.walls.entries()[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+                        for (var _iterator2 = sector.vertices.entries()[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
                             var _step2$value = _slicedToArray(_step2.value, 2),
                                 index = _step2$value[0],
-                                wall = _step2$value[1];
+                                vertex = _step2$value[1];
 
                             if (index === 0) {
-                                this.mapContext.moveTo(wall.x, wall.y);
+                                this.mapContext.moveTo(vertex.x, vertex.y);
                             } else {
                                 this.mapContext.strokeStyle = 'black';
-                                this.mapContext.lineTo(wall.x, wall.y);
+                                this.mapContext.lineTo(vertex.x, vertex.y);
                             }
                         }
                     } catch (err) {
@@ -227,7 +227,7 @@ var Game = function () {
                         }
                     }
 
-                    this.mapContext.lineTo(sector.walls[0].x, sector.walls[0].y);
+                    this.mapContext.lineTo(sector.vertices[0].x, sector.vertices[0].y);
                     this.mapContext.stroke();
                 }
             } catch (err) {
@@ -293,6 +293,8 @@ var Player = function () {
             x = _ref$x === undefined ? 0 : _ref$x,
             _ref$y = _ref.y,
             y = _ref$y === undefined ? 0 : _ref$y,
+            _ref$z = _ref.z,
+            z = _ref$z === undefined ? 0 : _ref$z,
             _ref$height = _ref.height,
             height = _ref$height === undefined ? 1 : _ref$height,
             _ref$rotation = _ref.rotation,
@@ -304,6 +306,7 @@ var Player = function () {
 
         this.x = x;
         this.y = y;
+        this.z = z;
         this.height = height;
         this.rotation = rotation;
         this.speed = 0;
@@ -321,6 +324,7 @@ var Player = function () {
             var _this = this;
 
             document.onkeydown = function (event) {
+                event.preventDefault();
                 switch (event.key) {
                     case _this.controls.forward:
                         _this.speed = 1;
@@ -452,7 +456,7 @@ exports.default = loadLevel;
 /* 7 */
 /***/ (function(module, exports) {
 
-module.exports = [{"sector_id":0,"walls":[{"x":20,"y":50},{"x":50,"y":20},{"x":150,"y":20},{"x":180,"y":50},{"x":180,"y":150},{"x":150,"y":180},{"x":50,"y":180},{"x":20,"y":150}]},{"sector_id":1,"walls":[{"x":180,"y":50},{"x":300,"y":50},{"x":300,"y":150},{"x":180,"y":150}]},{"sector_id":2,"walls":[{"x":300,"y":50},{"x":330,"y":20},{"x":430,"y":20},{"x":460,"y":50},{"x":460,"y":150},{"x":430,"y":180},{"x":330,"y":180},{"x":300,"y":150}]}]
+module.exports = [{"sector_id":0,"floor":0,"ceiling":20,"vertices":[{"x":20,"y":50},{"x":50,"y":20},{"x":150,"y":20},{"x":180,"y":50},{"x":180,"y":150},{"x":150,"y":180},{"x":50,"y":180},{"x":20,"y":150}]},{"sector_id":1,"floor":0,"ceiling":20,"vertices":[{"x":180,"y":50},{"x":300,"y":50},{"x":300,"y":150},{"x":180,"y":150}]},{"sector_id":2,"floor":0,"ceiling":20,"vertices":[{"x":300,"y":50},{"x":330,"y":20},{"x":430,"y":20},{"x":460,"y":50},{"x":460,"y":150},{"x":430,"y":180},{"x":330,"y":180},{"x":300,"y":150}]}]
 
 /***/ }),
 /* 8 */
@@ -483,6 +487,8 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+var _utils = __webpack_require__(10);
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function CameraException(message) {
@@ -499,6 +505,8 @@ var Camera = function () {
             y = _ref$y === undefined ? 0 : _ref$y,
             _ref$z = _ref.z,
             z = _ref$z === undefined ? 0 : _ref$z,
+            _ref$parent = _ref.parent,
+            parent = _ref$parent === undefined ? null : _ref$parent,
             _ref$world = _ref.world,
             world = _ref$world === undefined ? null : _ref$world,
             _ref$rotation = _ref.rotation,
@@ -511,24 +519,45 @@ var Camera = function () {
         if (!element) {
             throw new CameraException('DOM element needs to be defined');
         }
+        if (!parent) {
+            throw new CameraException('No parent assigned');
+        }
 
         this.width = element.width;
         this.height = element.height;
         this.x = x;
         this.y = y;
         this.z = z;
+        this.parent = parent;
         this.sector = null;
         this.world = world;
         this.rotation = rotation;
         this.hfov = 1.0 * 0.73 * this.height / this.width;
         this.vfov = 1.0 * .2;
+        this.context = element.getContext('2d');
 
         console.log(this);
     }
 
     _createClass(Camera, [{
-        key: 'findActiveSector',
-        value: function findActiveSector() {
+        key: 'clear',
+        value: function clear() {
+            this.context.clearRect(0, 0, this.width, this.height);
+        }
+    }, {
+        key: 'yaw',
+        value: function yaw(y, z) {
+            return y + z * 0; // 0 is placeholder. Should be player yaw, based on if the player is looking up or down.
+        }
+    }, {
+        key: 'render',
+        value: function render() {
+            if (!this.world) {
+                throw new CameraException('No world to render');
+            }
+
+            this.clear();
+
             var _iteratorNormalCompletion = true;
             var _didIteratorError = false;
             var _iteratorError = undefined;
@@ -537,8 +566,112 @@ var Camera = function () {
                 for (var _iterator = this.world[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
                     var sector = _step.value;
 
-                    console.log(sector);
+                    for (var i = 0; i < sector.vertices.length; i++) {
+                        /* Acquire the x,y coordinates of the two vertexes forming the edge of the sector */
+                        /* Transform the vertices into the player's view */
+                        var vx1 = sector.vertices[i].x - this.parent.x;
+                        var vy1 = sector.vertices[i].y - this.parent.y;
+                        var vx2 = (i >= sector.vertices.length - 1 ? sector.vertices[0].x : sector.vertices[i + 1].x) - this.parent.x;
+                        var vy2 = (i >= sector.vertices.length - 1 ? sector.vertices[0].y : sector.vertices[i + 1].y) - this.parent.y;
+
+                        /* Rotate them around the player's view */
+                        var angle = (0, _utils.toRadians)(this.parent.rotation);
+                        var pcos = Math.cos(angle);
+                        var psin = Math.sin(angle);
+                        var tx1 = vx1 * psin - vy1 * pcos;
+                        var tz1 = vx1 * pcos + vy1 * psin;
+                        var tx2 = vx2 * psin - vy2 * pcos;
+                        var tz2 = vx2 * pcos + vy2 * psin;
+
+                        /* Is the wall at least partially in front of the player? */
+                        if (tz1 <= 0 && tz2 <= 0) continue;
+
+                        /* Is any part of the wall behind the player */
+                        if (tz1 <= 0 || tz2 <= 0) {
+                            var nearz = 5; // Not sure why this needs to be this
+                            var farz = 5; // Not sure why this needs to be this
+                            var nearside = 0.00001; // Not sure why this needs to be this
+                            var farside = 20; // Not sure why this needs to be this
+
+                            // Find an intersection between the wall and the approximate edges of player's view
+                            var i1 = (0, _utils.intersect)(tx1, tz1, tx2, tz2, -nearside, nearz, -farside, farz);
+                            var i2 = (0, _utils.intersect)(tx1, tz1, tx2, tz2, nearside, nearz, farside, farz);
+
+                            if (tz1 < nearz) {
+                                if (i1.y > 0) {
+                                    tx1 = i1.x;tz1 = i1.y;
+                                } else {
+                                    tx1 = i2.x;tz1 = i2.y;
+                                }
+                            }
+                            if (tz2 < nearz) {
+                                if (i1.y > 0) {
+                                    tx2 = i1.x;tz2 = i1.y;
+                                } else {
+                                    tx2 = i2.x;tz2 = i2.y;
+                                }
+                            }
+                        }
+
+                        /* Do perspective transformation */
+                        var xscale1 = this.width * this.hfov / tz1;
+                        var yscale1 = this.height * this.vfov / tz1;
+                        var xscale2 = this.width * this.hfov / tz2;
+                        var yscale2 = this.height * this.vfov / tz2;
+                        var x1 = this.width / 2 + -tx1 * xscale1;
+                        var x2 = this.width / 2 + -tx2 * xscale2;
+
+                        if (x1 >= x2) continue;
+
+                        var yceil = sector.ceiling - this.parent.z;
+                        var yfloor = sector.floor - this.parent.z;
+
+                        var y1a = this.height / 2 + -this.yaw(yceil, tz1) * yscale1;
+                        var y1b = this.height / 2 + -this.yaw(yfloor, tz1) * yscale1;
+                        var y2a = this.height / 2 + -this.yaw(yceil, tz2) * yscale2;
+                        var y2b = this.height / 2 + -this.yaw(yfloor, tz2) * yscale2;
+
+                        /* Disable by default */
+                        /* Use the following to draw out rotated vectors */
+                        // this.context.save();
+                        // this.context.beginPath();
+                        // this.context.strokeStyle = 'black';
+                        // this.context.moveTo(tx1 + (this.width / 2), tz1 + (this.height / 2));
+                        // this.context.lineTo(tx2 + (this.width / 2), tz2 + (this.height / 2));
+                        // this.context.stroke();
+                        // this.context.closePath();
+                        // this.context.restore();  
+
+                        /* USe the following to draw perspective transformed vertices */
+                        this.context.save();
+                        // Draws lines between vertices
+                        this.context.beginPath();
+                        this.context.strokeStyle = 'black';
+                        this.context.moveTo(x1, y1a);
+                        this.context.lineTo(x2, y2a);
+                        this.context.lineTo(x2, y2b);
+                        this.context.lineTo(x1, y1b);
+                        this.context.lineTo(x1, y1a);
+                        this.context.stroke();
+                        this.context.fillStyle = '#ccc';
+                        this.context.fill();
+                        // Draws vertices
+                        this.context.fillStyle = 'red';
+                        this.context.fillRect(x1, y1a, 2, 2);
+                        this.context.fillRect(x1, y1b, 2, 2);
+                        this.context.fillRect(x2, y2a, 2, 2);
+                        this.context.fillRect(x2, y2b, 2, 2);
+                        this.context.closePath();
+                        this.context.restore();
+                    }
                 }
+
+                /* Disable by default */
+                /* Use the following to draw out player for rotated vectors */
+                // this.context.beginPath();
+                // this.context.fillStyle = 'red';
+                // this.context.fillRect(this.width/2 - 4, this.height/2 - 4, 8, 8);
+                // this.context.closePath();
             } catch (err) {
                 _didIteratorError = true;
                 _iteratorError = err;
@@ -554,25 +687,90 @@ var Camera = function () {
                 }
             }
         }
-    }, {
-        key: 'render',
-        value: function render() {
-            if (!this.world) {
-                throw new CameraException('No world to render');
-            }
-
-            this.findActiveSector();
-
-            // for(const sector of this.world){
-            //     console.log(sector);
-            // }
-        }
     }]);
 
     return Camera;
 }();
 
 exports.default = Camera;
+
+/***/ }),
+/* 10 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _degreeConversion = __webpack_require__(11);
+
+Object.defineProperty(exports, 'toRadians', {
+  enumerable: true,
+  get: function get() {
+    return _degreeConversion.toRadians;
+  }
+});
+Object.defineProperty(exports, 'toDegrees', {
+  enumerable: true,
+  get: function get() {
+    return _degreeConversion.toDegrees;
+  }
+});
+
+var _intersect = __webpack_require__(12);
+
+Object.defineProperty(exports, 'intersect', {
+  enumerable: true,
+  get: function get() {
+    return _intersect.intersect;
+  }
+});
+
+/***/ }),
+/* 11 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+var toRadians = exports.toRadians = function toRadians(degrees) {
+    return degrees * Math.PI / 180;
+};
+
+var toDegrees = exports.toDegrees = function toDegrees(radians) {
+    return radians * 180 / Math.PI;
+};
+
+/***/ }),
+/* 12 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+var cross = function cross(x1, y1, x2, y2) {
+    return x1 * y2 - y1 * x2;
+};
+
+var intersect = exports.intersect = function intersect(x1, y1, x2, y2, x3, y3, x4, y4) {
+
+    var x = cross(x1, y1, x2, y2);
+    var y = cross(x3, y3, x4, y4);
+    var det = cross(x1 - x2, y1 - y2, x3 - x4, y3 - y4);
+    x = cross(x, x1 - x2, y, x3 - x4) / det;
+    y = cross(x, y1 - y2, y, y3 - y4) / det;
+
+    return { x: x, y: y };
+};
 
 /***/ })
 /******/ ]);

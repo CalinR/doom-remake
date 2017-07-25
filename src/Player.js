@@ -1,9 +1,10 @@
 import { deltaTime, toRadians } from './utils'
 
 export default class Player {
-    constructor({x = 0, y = 0, height = 1, rotation = 0, controls = { forward: 'w', backward: 's', left: 'a', right: 'd'}} = {}){
+    constructor({x = 0, y = 0, z = 0, height = 1, rotation = 0, controls = { forward: 'w', backward: 's', left: 'a', right: 'd'}} = {}){
         this.x = x;
         this.y = y;
+        this.z = z;
         this.height = height;
         this.rotation = rotation;
         this.speed = 0;
@@ -17,6 +18,7 @@ export default class Player {
 
     bindControls(){
         document.onkeydown = (event) => {
+            event.preventDefault();
             switch(event.key){
                 case this.controls.forward:
                     this.speed = 1;
