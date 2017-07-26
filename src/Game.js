@@ -5,7 +5,7 @@ import {Camera} from 'software-renderer'
 
 export default class Game {
     constructor(){
-        this.player = new Player({ x: 100, y: 100, z: 6, rotation: 180, controls: { forward: 'ArrowUp', backward: 'ArrowDown', left: 'ArrowLeft', right: 'ArrowRight' } });
+        this.player = new Player({ x: 100, y: 100, z: 25, rotation: 0, controls: { forward: 'ArrowUp', backward: 'ArrowDown', left: 'ArrowLeft', right: 'ArrowRight' } });
         this.mapCanvas = document.getElementById('map');
         this.mapContext = this.mapCanvas.getContext('2d');
         this.level = loadLevel('demo');
