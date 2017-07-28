@@ -64,53 +64,7 @@
 /******/ })
 /************************************************************************/
 /******/ ([
-/* 0 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _degreeConversion = __webpack_require__(4);
-
-Object.defineProperty(exports, 'toRadians', {
-  enumerable: true,
-  get: function get() {
-    return _degreeConversion.toRadians;
-  }
-});
-Object.defineProperty(exports, 'toDegrees', {
-  enumerable: true,
-  get: function get() {
-    return _degreeConversion.toDegrees;
-  }
-});
-
-var _time = __webpack_require__(5);
-
-Object.defineProperty(exports, 'deltaTime', {
-  enumerable: true,
-  get: function get() {
-    return _time.deltaTime;
-  }
-});
-Object.defineProperty(exports, 'lastUpdate', {
-  enumerable: true,
-  get: function get() {
-    return _time.lastUpdate;
-  }
-});
-Object.defineProperty(exports, 'updateTime', {
-  enumerable: true,
-  get: function get() {
-    return _time.updateTime;
-  }
-});
-
-/***/ }),
+/* 0 */,
 /* 1 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -140,12 +94,6 @@ var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = [
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _Player = __webpack_require__(3);
-
-var _Player2 = _interopRequireDefault(_Player);
-
-var _utils = __webpack_require__(0);
-
 var _loadLevel = __webpack_require__(6);
 
 var _loadLevel2 = _interopRequireDefault(_loadLevel);
@@ -160,10 +108,10 @@ var Game = function () {
     function Game() {
         _classCallCheck(this, Game);
 
-        this.player = new _Player2.default({ x: 100, y: 100, z: 25, rotation: 0, controls: { forward: 'ArrowUp', backward: 'ArrowDown', left: 'ArrowLeft', right: 'ArrowRight' } });
         this.mapCanvas = document.getElementById('map');
         this.mapContext = this.mapCanvas.getContext('2d');
         this.level = (0, _loadLevel2.default)('demo');
+        this.player = new _softwareRenderer.Player({ x: 100, y: 100, z: 25, rotation: 0, controls: { forward: 'ArrowUp', backward: 'ArrowDown', left: 'ArrowLeft', right: 'ArrowRight' }, world: this.level });
         this.camera = new _softwareRenderer.Camera({ parent: this.player, world: this.level, element: document.getElementById('camera') });
         this.loop();
     }
@@ -173,7 +121,7 @@ var Game = function () {
         value: function loop() {
             var _this = this;
 
-            (0, _utils.updateTime)();
+            _softwareRenderer.utils.updateTime();
             this.player.update();
             this.drawMap();
             this.drawPlayer();
@@ -187,7 +135,6 @@ var Game = function () {
         value: function drawMap() {
             this.mapContext.clearRect(0, 0, this.mapCanvas.width, this.mapCanvas.height);
             this.mapContext.save();
-            this.mapContext.beginPath();
             var _iteratorNormalCompletion = true;
             var _didIteratorError = false;
             var _iteratorError = undefined;
@@ -195,6 +142,8 @@ var Game = function () {
             try {
                 for (var _iterator = this.level[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
                     var sector = _step.value;
+
+                    this.mapContext.beginPath();
                     var _iteratorNormalCompletion2 = true;
                     var _didIteratorError2 = false;
                     var _iteratorError2 = undefined;
@@ -228,7 +177,12 @@ var Game = function () {
                     }
 
                     this.mapContext.lineTo(sector.vertices[0].x, sector.vertices[0].y);
+                    if (this.camera.sector == sector.id) {
+                        this.mapContext.fillStyle = '#bdc3c7';
+                        this.mapContext.fill();
+                    }
                     this.mapContext.stroke();
+                    this.mapContext.closePath();
                 }
             } catch (err) {
                 _didIteratorError = true;
@@ -245,7 +199,6 @@ var Game = function () {
                 }
             }
 
-            this.mapContext.closePath();
             this.mapContext.restore();
         }
     }, {
@@ -255,10 +208,10 @@ var Game = function () {
             this.mapContext.save();
             this.mapContext.beginPath();
             this.mapContext.translate(this.player.x, this.player.y);
-            this.mapContext.rotate((0, _utils.toRadians)(this.player.rotation));
+            this.mapContext.rotate(_softwareRenderer.utils.toRadians(this.player.rotation));
             this.mapContext.fillStyle = 'red';
-            this.mapContext.fillRect(-playerSize / 2, -playerSize / 2, playerSize, playerSize);
             this.mapContext.fillRect(0, -1, 10, 2);
+            this.mapContext.fillRect(-playerSize / 2, -playerSize / 2, playerSize, playerSize);
             this.mapContext.closePath();
             this.mapContext.restore();
         }
@@ -270,160 +223,9 @@ var Game = function () {
 exports.default = Game;
 
 /***/ }),
-/* 3 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _utils = __webpack_require__(0);
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var Player = function () {
-    function Player() {
-        var _ref = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
-            _ref$x = _ref.x,
-            x = _ref$x === undefined ? 0 : _ref$x,
-            _ref$y = _ref.y,
-            y = _ref$y === undefined ? 0 : _ref$y,
-            _ref$z = _ref.z,
-            z = _ref$z === undefined ? 0 : _ref$z,
-            _ref$height = _ref.height,
-            height = _ref$height === undefined ? 1 : _ref$height,
-            _ref$rotation = _ref.rotation,
-            rotation = _ref$rotation === undefined ? 0 : _ref$rotation,
-            _ref$controls = _ref.controls,
-            controls = _ref$controls === undefined ? { forward: 'w', backward: 's', left: 'a', right: 'd' } : _ref$controls;
-
-        _classCallCheck(this, Player);
-
-        this.x = x;
-        this.y = y;
-        this.z = z;
-        this.height = height;
-        this.rotation = rotation;
-        this.speed = 0;
-        this.moveSpeed = 50;
-        this.rotationSpeed = 90;
-        this.direction = 0;
-        this.controls = controls;
-
-        this.bindControls();
-    }
-
-    _createClass(Player, [{
-        key: 'bindControls',
-        value: function bindControls() {
-            var _this = this;
-
-            document.onkeydown = function (event) {
-                event.preventDefault();
-                switch (event.key) {
-                    case _this.controls.forward:
-                        _this.speed = 1;
-                        break;
-                    case _this.controls.backward:
-                        _this.speed = -1;
-                        break;
-                    case _this.controls.left:
-                        _this.direction = -1;
-                        break;
-                    case _this.controls.right:
-                        _this.direction = 1;
-                        break;
-                }
-            };
-
-            document.onkeyup = function (event) {
-                switch (event.key) {
-                    case _this.controls.forward:
-                        _this.speed = 0;
-                        break;
-                    case _this.controls.backward:
-                        _this.speed = 0;
-                        break;
-                    case _this.controls.left:
-                        _this.direction = 0;
-                        break;
-                    case _this.controls.right:
-                        _this.direction = 0;
-                        break;
-                }
-            };
-        }
-    }, {
-        key: 'update',
-        value: function update() {
-            var rotation = this.rotation + this.direction * this.rotationSpeed * _utils.deltaTime;
-
-            if (rotation > 360) {
-                rotation = 0;
-            } else if (rotation < 0) {
-                rotation = rotation + 360;
-            }
-
-            var moveStep = this.speed * this.moveSpeed;
-            var radians = (0, _utils.toRadians)(rotation);
-            var moveX = Math.cos(radians) * moveStep;
-            var moveY = Math.sin(radians) * moveStep;
-            var x = this.x + moveX * _utils.deltaTime;
-            var y = this.y + moveY * _utils.deltaTime;
-
-            this.x = x;
-            this.y = y;
-            this.rotation = rotation;
-        }
-    }]);
-
-    return Player;
-}();
-
-exports.default = Player;
-
-/***/ }),
-/* 4 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-var toRadians = exports.toRadians = function toRadians(degrees) {
-    return degrees * Math.PI / 180;
-};
-
-var toDegrees = exports.toDegrees = function toDegrees(radians) {
-    return radians * 180 / Math.PI;
-};
-
-/***/ }),
-/* 5 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-var deltaTime = exports.deltaTime = 0;
-var lastUpdate = exports.lastUpdate = Date.now();
-var updateTime = exports.updateTime = function updateTime() {
-    var currentTime = Date.now();
-    exports.deltaTime = deltaTime = (currentTime - lastUpdate) / 1000.0; // Convert delta time from milliseconds to seconds
-    exports.lastUpdate = lastUpdate = currentTime;
-};
-
-/***/ }),
+/* 3 */,
+/* 4 */,
+/* 5 */,
 /* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -456,7 +258,7 @@ exports.default = loadLevel;
 /* 7 */
 /***/ (function(module, exports) {
 
-module.exports = [{"id":0,"floor":0,"ceiling":60,"vertices":[{"x":20,"y":50,"neighbour":-1},{"x":50,"y":20,"neighbour":-1},{"x":150,"y":20,"neighbour":-1},{"x":180,"y":50,"neighbour":1},{"x":180,"y":150,"neighbour":-1},{"x":150,"y":180,"neighbour":-1},{"x":50,"y":180,"neighbour":-1},{"x":20,"y":150,"neighbour":-1}]},{"id":1,"floor":0,"ceiling":60,"vertices":[{"x":180,"y":50,"neighbour":-1},{"x":300,"y":50,"neighbour":2},{"x":300,"y":150,"neighbour":-1},{"x":180,"y":150,"neighbour":0}]},{"id":2,"floor":0,"ceiling":60,"vertices":[{"x":300,"y":50,"neighbour":-1},{"x":330,"y":20,"neighbour":-1},{"x":430,"y":20,"neighbour":-1},{"x":460,"y":50,"neighbour":-1},{"x":460,"y":150,"neighbour":-1},{"x":430,"y":180,"neighbour":-1},{"x":330,"y":180,"neighbour":3},{"x":300,"y":150,"neighbour":1}]},{"id":3,"floor":0,"ceiling":60,"vertices":[{"x":300,"y":150,"neighbour":2},{"x":330,"y":180,"neighbour":-1},{"x":260,"y":240,"neighbour":-1},{"x":230,"y":210,"neighbour":-1}]}]
+module.exports = [{"id":0,"floor":0,"ceiling":60,"vertices":[{"x":20,"y":50,"neighbour":-1},{"x":50,"y":20,"neighbour":-1},{"x":150,"y":20,"neighbour":-1},{"x":180,"y":50,"neighbour":1},{"x":180,"y":150,"neighbour":-1},{"x":150,"y":180,"neighbour":-1},{"x":50,"y":180,"neighbour":-1},{"x":20,"y":150,"neighbour":-1}]},{"id":1,"floor":10,"ceiling":50,"vertices":[{"x":180,"y":50,"neighbour":-1},{"x":300,"y":50,"neighbour":2},{"x":300,"y":150,"neighbour":-1},{"x":180,"y":150,"neighbour":0}]},{"id":2,"floor":0,"ceiling":60,"vertices":[{"x":300,"y":50,"neighbour":-1},{"x":330,"y":20,"neighbour":-1},{"x":430,"y":20,"neighbour":-1},{"x":460,"y":50,"neighbour":-1},{"x":460,"y":150,"neighbour":-1},{"x":430,"y":180,"neighbour":-1},{"x":330,"y":180,"neighbour":3},{"x":300,"y":150,"neighbour":1}]},{"id":3,"floor":0,"ceiling":60,"vertices":[{"x":300,"y":150,"neighbour":2},{"x":330,"y":180,"neighbour":-1},{"x":260,"y":240,"neighbour":-1},{"x":230,"y":210,"neighbour":-1}]}]
 
 /***/ }),
 /* 8 */
@@ -466,7 +268,15 @@ module.exports = [{"id":0,"floor":0,"ceiling":60,"vertices":[{"x":20,"y":50,"nei
 
 
 module.exports = {
-    Camera: __webpack_require__(9).default
+    Camera: __webpack_require__(9).default,
+    Player: __webpack_require__(14).default,
+    utils: {
+        toRadians: __webpack_require__(10).toRadians,
+        toDegrees: __webpack_require__(10).toDegrees,
+        deltaTime: __webpack_require__(10).deltaTime,
+        lastUpdate: __webpack_require__(10).lastUpdate,
+        updateTime: __webpack_require__(10).updateTime
+    }
 
     // import Camera from './Camera'
 
@@ -728,6 +538,32 @@ var Camera = function () {
                 var y2a = this.height / 2 + -this.yaw(yceil, tz2) * yscale2;
                 var y2b = this.height / 2 + -this.yaw(yfloor, tz2) * yscale2;
 
+                var nyceil = 0;
+                var nyfloor = 0;
+                var neighbour = sector.vertices[i].neighbour;
+
+                if (neighbour > -1) {
+                    nyceil = this.world[neighbour].ceiling - this.parent.z;
+                    nyfloor = this.world[neighbour].floor - this.parent.z;
+                }
+
+                var ny1a = this.height / 2 + -this.yaw(nyceil, tz1) * yscale1;
+                var ny1b = this.height / 2 + -this.yaw(nyfloor, tz1) * yscale1;
+                var ny2a = this.height / 2 + -this.yaw(nyceil, tz2) * yscale2;
+                var ny2b = this.height / 2 + -this.yaw(nyfloor, tz2) * yscale2;
+
+                // float nyceil=0, nyfloor=0;
+
+                // if(neighbor >= 0)
+                // {
+                //     /* Something is showing through this wall (portal). */
+                //     /* Perspective-transform the floor and ceiling coordinates of the neighboring sector. */
+                //     nyceil  = sectors[neighbor].ceil  - player.where.z;
+                //     nyfloor = sectors[neighbor].floor - player.where.z;
+                // }
+                // int ny1a = H/2 + (int)( -Yaw(nyceil, tz1) * yscale1), ny1b = H/2 + (int)( -Yaw(nyfloor, tz1) * yscale1);
+                // int ny2a = H/2 + (int)( -Yaw(nyceil, tz2) * yscale2), ny2b = H/2 + (int)( -Yaw(nyfloor, tz2) * yscale2);
+
                 /* Disable by default */
                 /* Use the following to draw out rotated vectors */
                 // this.context.save();
@@ -742,26 +578,77 @@ var Camera = function () {
                 /* USe the following to draw perspective transformed vertices */
                 this.context.save();
                 // Draws lines between vertices
-                this.context.beginPath();
+
                 this.context.strokeStyle = 'black';
-                this.context.moveTo(x1, y1a);
-                this.context.lineTo(x2, y2a);
-                this.context.lineTo(x2, y2b);
-                this.context.lineTo(x1, y1b);
-                this.context.lineTo(x1, y1a);
-                this.context.stroke();
-                if (sector.vertices[i].neighbour > -1) {
-                    this.context.fillStyle = 'red';
+
+                if (neighbour > -1) {
+                    this.context.fillStyle = '#7000c2';
+
+                    // If neighbour ceiling is lower than current sector ceiling, render it
+                    if (this.world[neighbour].ceiling < sector.ceiling) {
+                        // Draw ceiling of neighbour
+                        this.context.beginPath();
+                        this.context.moveTo(x1, y1a);
+                        this.context.lineTo(x2, y2a);
+                        this.context.lineTo(x2, ny2a);
+                        this.context.lineTo(x1, ny1a);
+                        this.context.lineTo(x1, y1a);
+                        this.context.stroke();
+                        this.context.fill();
+                        this.context.closePath();
+                    } else {
+                        ny1a = y1a;
+                        ny2a = y2a;
+                    }
+
+                    // If neighbour floor is higher than current sector floor, render it
+                    if (this.world[neighbour].floor > sector.floor) {
+                        // Draw floor of neighbour
+                        this.context.beginPath();
+                        this.context.moveTo(x1, y1b);
+                        this.context.lineTo(x2, y2b);
+                        this.context.lineTo(x2, ny2b);
+                        this.context.lineTo(x1, ny1b);
+                        this.context.lineTo(x1, y1b);
+                        this.context.stroke();
+                        this.context.fill();
+                        this.context.closePath();
+                    } else {
+                        ny1b = y1b;
+                        ny2b = y2b;
+                    }
+
+                    // Render portal
+                    this.context.beginPath();
+                    this.context.fillStyle = '#ac0002';
+                    this.context.moveTo(x1, ny1a);
+                    this.context.lineTo(x2, ny2a);
+                    this.context.lineTo(x2, ny2b);
+                    this.context.lineTo(x1, ny1b);
+                    this.context.lineTo(x1, ny1b);
+                    this.context.stroke();
+                    this.context.fill();
+                    this.context.closePath();
                 } else {
-                    this.context.fillStyle = '#ccc';
+                    this.context.fillStyle = '#aba9ab';
+                    // Draw Wall
+                    this.context.moveTo(x1, y1a);
+                    this.context.lineTo(x2, y2a);
+                    this.context.lineTo(x2, y2b);
+                    this.context.lineTo(x1, y1b);
+                    this.context.lineTo(x1, y1a);
+                    this.context.stroke();
+                    this.context.fill();
                 }
-                this.context.fill();
+
                 // Draws vertices
-                this.context.fillStyle = 'red';
-                this.context.fillRect(x1, y1a, 2, 2);
-                this.context.fillRect(x1, y1b, 2, 2);
-                this.context.fillRect(x2, y2a, 2, 2);
-                this.context.fillRect(x2, y2b, 2, 2);
+                this.context.fillStyle = '#e74c3c';
+                var vertexSize = 4;
+                this.context.beginPath();
+                this.context.fillRect(x1 - vertexSize / 2, y1a - vertexSize / 2, vertexSize, vertexSize);
+                this.context.fillRect(x1 - vertexSize / 2, y1b - vertexSize / 2, vertexSize, vertexSize);
+                this.context.fillRect(x2 - vertexSize / 2, y2a - vertexSize / 2, vertexSize, vertexSize);
+                this.context.fillRect(x2 - vertexSize / 2, y2b - vertexSize / 2, vertexSize, vertexSize);
                 this.context.closePath();
                 this.context.restore();
             }
@@ -798,43 +685,64 @@ exports.default = Camera;
 
 
 Object.defineProperty(exports, "__esModule", {
-    value: true
+  value: true
 });
 
 var _degreeConversion = __webpack_require__(11);
 
 Object.defineProperty(exports, 'toRadians', {
-    enumerable: true,
-    get: function get() {
-        return _degreeConversion.toRadians;
-    }
+  enumerable: true,
+  get: function get() {
+    return _degreeConversion.toRadians;
+  }
 });
 Object.defineProperty(exports, 'toDegrees', {
-    enumerable: true,
-    get: function get() {
-        return _degreeConversion.toDegrees;
-    }
+  enumerable: true,
+  get: function get() {
+    return _degreeConversion.toDegrees;
+  }
 });
 
 var _intersect = __webpack_require__(12);
 
 Object.defineProperty(exports, 'intersect', {
-    enumerable: true,
-    get: function get() {
-        return _intersect.intersect;
-    }
+  enumerable: true,
+  get: function get() {
+    return _intersect.intersect;
+  }
 });
 Object.defineProperty(exports, 'intersectBox', {
-    enumerable: true,
-    get: function get() {
-        return _intersect.intersectBox;
-    }
+  enumerable: true,
+  get: function get() {
+    return _intersect.intersectBox;
+  }
 });
 Object.defineProperty(exports, 'pointSide', {
-    enumerable: true,
-    get: function get() {
-        return _intersect.pointSide;
-    }
+  enumerable: true,
+  get: function get() {
+    return _intersect.pointSide;
+  }
+});
+
+var _time = __webpack_require__(13);
+
+Object.defineProperty(exports, 'deltaTime', {
+  enumerable: true,
+  get: function get() {
+    return _time.deltaTime;
+  }
+});
+Object.defineProperty(exports, 'lastUpdate', {
+  enumerable: true,
+  get: function get() {
+    return _time.lastUpdate;
+  }
+});
+Object.defineProperty(exports, 'updateTime', {
+  enumerable: true,
+  get: function get() {
+    return _time.updateTime;
+  }
 });
 
 /***/ }),
@@ -869,8 +777,11 @@ var cross = function cross(x0, y0, x1, y1) {
     return x0 * y1 - x1 * y0;
 };
 
-var intersect = exports.intersect = function intersect(x1, y1, x2, y2, x3, y3, x4, y4) {
+var overlap = function overlap(a0, a1, b0, b1) {
+    return Math.min(a0, a1) <= Math.max(b0, b1) && Math.min(b0, b1) <= Math.max(a0, a1);
+};
 
+var intersect = exports.intersect = function intersect(x1, y1, x2, y2, x3, y3, x4, y4) {
     var x = cross(x1, y1, x2, y2);
     var y = cross(x3, y3, x4, y4);
     var det = cross(x1 - x2, y1 - y2, x3 - x4, y3 - y4);
@@ -880,29 +791,148 @@ var intersect = exports.intersect = function intersect(x1, y1, x2, y2, x3, y3, x
     return { x: x, y: y };
 };
 
-var sign = function sign(v) {
-    return (v > 0) - (v < 0);
-};
-
-var min = function min(a, b) {
-    return a < b ? a : b;
-};
-
-var max = function max(a, b) {
-    return a > b ? a : b;
-};
-
-var overlap = function overlap(a0, a1, b0, b1) {
-    return min(a0, a1) <= max(b0, b1) && min(b0, b1) <= max(a0, a1);
-};
-
 var intersectBox = exports.intersectBox = function intersectBox(x0, y0, x1, y1, x2, y2, x3, y3) {
     return overlap(x0, x1, x2, x3) && overlap(y0, y1, y2, y3);
 };
 
 var pointSide = exports.pointSide = function pointSide(px, py, x0, y0, x1, y1) {
-    return sign(cross(x1 - x0, y1 - y0, px - x0, py - y0));
+    return Math.sign(cross(x1 - x0, y1 - y0, px - x0, py - y0));
 };
+
+/***/ }),
+/* 13 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+var deltaTime = exports.deltaTime = 0;
+var lastUpdate = exports.lastUpdate = Date.now();
+var updateTime = exports.updateTime = function updateTime() {
+    var currentTime = Date.now();
+    exports.deltaTime = deltaTime = (currentTime - lastUpdate) / 1000.0; // Convert delta time from milliseconds to seconds
+    exports.lastUpdate = lastUpdate = currentTime;
+};
+
+/***/ }),
+/* 14 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _utils = __webpack_require__(10);
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Player = function () {
+    function Player() {
+        var _ref = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
+            _ref$x = _ref.x,
+            x = _ref$x === undefined ? 0 : _ref$x,
+            _ref$y = _ref.y,
+            y = _ref$y === undefined ? 0 : _ref$y,
+            _ref$z = _ref.z,
+            z = _ref$z === undefined ? 0 : _ref$z,
+            _ref$rotation = _ref.rotation,
+            rotation = _ref$rotation === undefined ? 0 : _ref$rotation,
+            _ref$controls = _ref.controls,
+            controls = _ref$controls === undefined ? { forward: 'w', backward: 's', left: 'a', right: 'd' } : _ref$controls,
+            _ref$world = _ref.world,
+            world = _ref$world === undefined ? null : _ref$world;
+
+        _classCallCheck(this, Player);
+
+        this.x = x;
+        this.y = y;
+        this.z = z;
+        this.rotation = rotation;
+        this.world = world;
+        this.speed = 0;
+        this.moveSpeed = 50;
+        this.rotationSpeed = 90;
+        this.direction = 0;
+        this.controls = controls;
+        this.bindControls();
+    }
+
+    _createClass(Player, [{
+        key: 'bindControls',
+        value: function bindControls() {
+            var _this = this;
+
+            document.onkeydown = function (event) {
+                event.preventDefault();
+                switch (event.key) {
+                    case _this.controls.forward:
+                        _this.speed = 1;
+                        break;
+                    case _this.controls.backward:
+                        _this.speed = -1;
+                        break;
+                    case _this.controls.left:
+                        _this.direction = -1;
+                        break;
+                    case _this.controls.right:
+                        _this.direction = 1;
+                        break;
+                }
+            };
+
+            document.onkeyup = function (event) {
+                switch (event.key) {
+                    case _this.controls.forward:
+                        _this.speed = 0;
+                        break;
+                    case _this.controls.backward:
+                        _this.speed = 0;
+                        break;
+                    case _this.controls.left:
+                        _this.direction = 0;
+                        break;
+                    case _this.controls.right:
+                        _this.direction = 0;
+                        break;
+                }
+            };
+        }
+    }, {
+        key: 'update',
+        value: function update() {
+            var rotation = this.rotation + this.direction * this.rotationSpeed * _utils.deltaTime;
+
+            if (rotation > 360) {
+                rotation = 0;
+            } else if (rotation < 0) {
+                rotation = rotation + 360;
+            }
+
+            var moveStep = this.speed * this.moveSpeed;
+            var radians = (0, _utils.toRadians)(rotation);
+            var moveX = Math.cos(radians) * moveStep;
+            var moveY = Math.sin(radians) * moveStep;
+            var x = this.x + moveX * _utils.deltaTime;
+            var y = this.y + moveY * _utils.deltaTime;
+
+            this.x = x;
+            this.y = y;
+            this.rotation = rotation;
+        }
+    }]);
+
+    return Player;
+}();
+
+exports.default = Player;
 
 /***/ })
 /******/ ]);

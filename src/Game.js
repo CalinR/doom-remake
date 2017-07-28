@@ -1,20 +1,18 @@
-import Player from './Player'
-import { deltaTime, lastUpdate, updateTime, toRadians } from './utils'
 import loadLevel from './levels/loadLevel'
-import {Camera} from 'software-renderer'
+import {Camera, Player, utils} from 'software-renderer'
 
 export default class Game {
     constructor(){
-        this.player = new Player({ x: 100, y: 100, z: 25, rotation: 0, controls: { forward: 'ArrowUp', backward: 'ArrowDown', left: 'ArrowLeft', right: 'ArrowRight' } });
         this.mapCanvas = document.getElementById('map');
         this.mapContext = this.mapCanvas.getContext('2d');
         this.level = loadLevel('demo');
+        this.player = new Player({ x: 100, y: 100, z: 25, rotation: 0, controls: { forward: 'ArrowUp', backward: 'ArrowDown', left: 'ArrowLeft', right: 'ArrowRight' }, world: this.level });
         this.camera = new Camera({ parent: this.player, world: this.level, element: document.getElementById('camera') });
         this.loop();
     }
 
     loop(){
-        updateTime();
+        utils.updateTime();
         this.player.update();
         this.drawMap();
         this.drawPlayer();
@@ -25,8 +23,8 @@ export default class Game {
     drawMap(){
         this.mapContext.clearRect(0, 0, this.mapCanvas.width, this.mapCanvas.height);
         this.mapContext.save();
-        this.mapContext.beginPath();
         for(const sector of this.level){
+            this.mapContext.beginPath();
             for(const [index, vertex] of sector.vertices.entries()){
                 if(index === 0){
                     this.mapContext.moveTo(vertex.x, vertex.y);
@@ -37,9 +35,13 @@ export default class Game {
                 }
             }
             this.mapContext.lineTo(sector.vertices[0].x, sector.vertices[0].y);
+            if(this.camera.sector == sector.id){
+                this.mapContext.fillStyle = '#bdc3c7';
+                this.mapContext.fill();
+            }
             this.mapContext.stroke();
+            this.mapContext.closePath();
         }
-        this.mapContext.closePath();
         this.mapContext.restore();
     }
 
@@ -48,10 +50,10 @@ export default class Game {
         this.mapContext.save();
         this.mapContext.beginPath();
         this.mapContext.translate(this.player.x, this.player.y);
-        this.mapContext.rotate(toRadians(this.player.rotation));
+        this.mapContext.rotate(utils.toRadians(this.player.rotation));
         this.mapContext.fillStyle = 'red';
-        this.mapContext.fillRect(-playerSize / 2, -playerSize/2, playerSize, playerSize);
         this.mapContext.fillRect(0, -1, 10, 2);
+        this.mapContext.fillRect(-playerSize / 2, -playerSize/2, playerSize, playerSize);
         this.mapContext.closePath();
         this.mapContext.restore();
     }

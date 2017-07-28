@@ -48,8 +48,8 @@
     },
     {
         "id": 1,
-        "floor": 0,
-        "ceiling": 60,
+        "floor": 10,
+        "ceiling": 50,
         "vertices": [
             {
                 "x": 180,
