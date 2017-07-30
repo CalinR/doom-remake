@@ -1,18 +1,14 @@
-import { deltaTime, toRadians } from './utils'
+import { GameObject, deltaTime, toRadians } from 'software-renderer'
 
-export default class Player {
-    constructor({x = 0, y = 0, z = 0, height = 1, rotation = 0, controls = { forward: 'w', backward: 's', left: 'a', right: 'd'}} = {}){
-        this.x = x;
-        this.y = y;
-        this.z = z;
-        this.height = height;
-        this.rotation = rotation;
+export default class Player extends GameObject {
+    constructor({x = 0, y = 0, z = 0, rotation = 0, controls = { forward: 'w', backward: 's', left: 'a', right: 'd'}, world = null} = {}){
+        super({ x, y, z, rotation });
+        this.world = world;
         this.speed = 0;
         this.moveSpeed = 50;
         this.rotationSpeed = 90;
         this.direction = 0;
         this.controls = controls;
-
         this.bindControls();
     }
 
@@ -54,6 +50,9 @@ export default class Player {
     }
 
     update(){
+        if(this.sector){
+            this.z = this.sector.floor;
+        }
         let rotation = this.rotation + ((this.direction * this.rotationSpeed) * deltaTime);
         
         if(rotation > 360){

@@ -1,18 +1,19 @@
 import loadLevel from './levels/loadLevel'
-import {Camera, Player, utils} from 'software-renderer'
+import {Camera, updateTime, toRadians} from 'software-renderer'
+import Player from './Player'
 
 export default class Game {
     constructor(){
         this.mapCanvas = document.getElementById('map');
         this.mapContext = this.mapCanvas.getContext('2d');
         this.level = loadLevel('demo');
-        this.player = new Player({ x: 100, y: 100, z: 25, rotation: 0, controls: { forward: 'ArrowUp', backward: 'ArrowDown', left: 'ArrowLeft', right: 'ArrowRight' }, world: this.level });
-        this.camera = new Camera({ parent: this.player, world: this.level, element: document.getElementById('camera') });
+        this.player = new Player({ x: 100, y: 100, z: 0, rotation: 0, controls: { forward: 'ArrowUp', backward: 'ArrowDown', left: 'ArrowLeft', right: 'ArrowRight' }, world: this.level });
+        this.camera = new Camera({ z: 25, parent: this.player, world: this.level, element: document.getElementById('camera') });
         this.loop();
     }
 
     loop(){
-        utils.updateTime();
+        updateTime();
         this.player.update();
         this.drawMap();
         this.drawPlayer();
@@ -50,7 +51,7 @@ export default class Game {
         this.mapContext.save();
         this.mapContext.beginPath();
         this.mapContext.translate(this.player.x, this.player.y);
-        this.mapContext.rotate(utils.toRadians(this.player.rotation));
+        this.mapContext.rotate(toRadians(this.player.rotation));
         this.mapContext.fillStyle = 'red';
         this.mapContext.fillRect(0, -1, 10, 2);
         this.mapContext.fillRect(-playerSize / 2, -playerSize/2, playerSize, playerSize);
