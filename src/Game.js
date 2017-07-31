@@ -7,7 +7,7 @@ export default class Game {
         this.mapCanvas = document.getElementById('map');
         this.mapContext = this.mapCanvas.getContext('2d');
         this.level = loadLevel('demo');
-        this.player = new Player({ x: 100, y: 100, z: 0, rotation: 0, controls: { forward: 'ArrowUp', backward: 'ArrowDown', left: 'ArrowLeft', right: 'ArrowRight' }, world: this.level });
+        this.player = new Player({ x: 110, y: 100, z: 0, rotation: 0, controls: { forward: 'ArrowUp', backward: 'ArrowDown', left: 'ArrowLeft', right: 'ArrowRight' }, world: this.level });
         this.camera = new Camera({ z: 25, parent: this.player, world: this.level, element: document.getElementById('camera') });
         this.loop();
     }
@@ -17,6 +17,7 @@ export default class Game {
         this.player.update();
         this.drawMap();
         this.drawPlayer();
+        this.drawEnemies();
         this.camera.render();
         window.requestAnimationFrame(() => this.loop());
     }
@@ -24,7 +25,7 @@ export default class Game {
     drawMap(){
         this.mapContext.clearRect(0, 0, this.mapCanvas.width, this.mapCanvas.height);
         this.mapContext.save();
-        for(const sector of this.level){
+        for(const sector of this.level.sectors){
             this.mapContext.beginPath();
             for(const [index, vertex] of sector.vertices.entries()){
                 if(index === 0){
@@ -57,5 +58,18 @@ export default class Game {
         this.mapContext.fillRect(-playerSize / 2, -playerSize/2, playerSize, playerSize);
         this.mapContext.closePath();
         this.mapContext.restore();
+    }
+
+    drawEnemies(){
+        const enemySize = 6;
+        for(const enemy of this.level.enemies){
+            this.mapContext.save();
+            this.mapContext.beginPath();
+            this.mapContext.translate(enemy.x, enemy.y);
+            this.mapContext.fillStyle = 'blue';
+            this.mapContext.fillRect(-enemySize / 2, -enemySize/2, enemySize, enemySize);
+            this.mapContext.closePath();
+            this.mapContext.restore();
+        }
     }
 }

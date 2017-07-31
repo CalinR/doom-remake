@@ -115,7 +115,7 @@ var Game = function () {
         this.mapCanvas = document.getElementById('map');
         this.mapContext = this.mapCanvas.getContext('2d');
         this.level = (0, _loadLevel2.default)('demo');
-        this.player = new _Player2.default({ x: 100, y: 100, z: 0, rotation: 0, controls: { forward: 'ArrowUp', backward: 'ArrowDown', left: 'ArrowLeft', right: 'ArrowRight' }, world: this.level });
+        this.player = new _Player2.default({ x: 110, y: 100, z: 0, rotation: 0, controls: { forward: 'ArrowUp', backward: 'ArrowDown', left: 'ArrowLeft', right: 'ArrowRight' }, world: this.level });
         this.camera = new _softwareRenderer.Camera({ z: 25, parent: this.player, world: this.level, element: document.getElementById('camera') });
         this.loop();
     }
@@ -129,6 +129,7 @@ var Game = function () {
             this.player.update();
             this.drawMap();
             this.drawPlayer();
+            this.drawEnemies();
             this.camera.render();
             window.requestAnimationFrame(function () {
                 return _this.loop();
@@ -144,7 +145,7 @@ var Game = function () {
             var _iteratorError = undefined;
 
             try {
-                for (var _iterator = this.level[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                for (var _iterator = this.level.sectors[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
                     var sector = _step.value;
 
                     this.mapContext.beginPath();
@@ -218,6 +219,41 @@ var Game = function () {
             this.mapContext.fillRect(-playerSize / 2, -playerSize / 2, playerSize, playerSize);
             this.mapContext.closePath();
             this.mapContext.restore();
+        }
+    }, {
+        key: 'drawEnemies',
+        value: function drawEnemies() {
+            var enemySize = 6;
+            var _iteratorNormalCompletion3 = true;
+            var _didIteratorError3 = false;
+            var _iteratorError3 = undefined;
+
+            try {
+                for (var _iterator3 = this.level.enemies[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
+                    var enemy = _step3.value;
+
+                    this.mapContext.save();
+                    this.mapContext.beginPath();
+                    this.mapContext.translate(enemy.x, enemy.y);
+                    this.mapContext.fillStyle = 'blue';
+                    this.mapContext.fillRect(-enemySize / 2, -enemySize / 2, enemySize, enemySize);
+                    this.mapContext.closePath();
+                    this.mapContext.restore();
+                }
+            } catch (err) {
+                _didIteratorError3 = true;
+                _iteratorError3 = err;
+            } finally {
+                try {
+                    if (!_iteratorNormalCompletion3 && _iterator3.return) {
+                        _iterator3.return();
+                    }
+                } finally {
+                    if (_didIteratorError3) {
+                        throw _iteratorError3;
+                    }
+                }
+            }
         }
     }]);
 
@@ -386,7 +422,7 @@ exports.default = loadLevel;
 /* 7 */
 /***/ (function(module, exports) {
 
-module.exports = [{"id":0,"floor":0,"ceiling":60,"vertices":[{"x":20,"y":50,"neighbour":-1},{"x":50,"y":20,"neighbour":-1},{"x":150,"y":20,"neighbour":-1},{"x":180,"y":50,"neighbour":1},{"x":180,"y":150,"neighbour":-1},{"x":150,"y":180,"neighbour":-1},{"x":50,"y":180,"neighbour":-1},{"x":20,"y":150,"neighbour":-1}]},{"id":1,"floor":10,"ceiling":50,"vertices":[{"x":180,"y":50,"neighbour":-1},{"x":300,"y":50,"neighbour":2},{"x":300,"y":150,"neighbour":-1},{"x":180,"y":150,"neighbour":0}]},{"id":2,"floor":0,"ceiling":60,"vertices":[{"x":300,"y":50,"neighbour":-1},{"x":330,"y":20,"neighbour":-1},{"x":430,"y":20,"neighbour":-1},{"x":460,"y":50,"neighbour":-1},{"x":460,"y":150,"neighbour":-1},{"x":430,"y":180,"neighbour":-1},{"x":330,"y":180,"neighbour":3},{"x":300,"y":150,"neighbour":1}]},{"id":3,"floor":0,"ceiling":60,"vertices":[{"x":300,"y":150,"neighbour":2},{"x":330,"y":180,"neighbour":-1},{"x":260,"y":240,"neighbour":-1},{"x":230,"y":210,"neighbour":-1}]}]
+module.exports = {"sectors":[{"id":0,"floor":0,"ceiling":60,"vertices":[{"x":20,"y":50,"neighbour":-1},{"x":50,"y":20,"neighbour":-1},{"x":150,"y":20,"neighbour":-1},{"x":180,"y":50,"neighbour":1},{"x":180,"y":150,"neighbour":-1},{"x":150,"y":180,"neighbour":-1},{"x":50,"y":180,"neighbour":-1},{"x":20,"y":150,"neighbour":-1}]},{"id":1,"floor":10,"ceiling":50,"vertices":[{"x":180,"y":50,"neighbour":-1},{"x":300,"y":50,"neighbour":2},{"x":300,"y":150,"neighbour":-1},{"x":180,"y":150,"neighbour":0}]},{"id":2,"floor":0,"ceiling":60,"vertices":[{"x":300,"y":50,"neighbour":-1},{"x":330,"y":20,"neighbour":-1},{"x":430,"y":20,"neighbour":-1},{"x":460,"y":50,"neighbour":-1},{"x":460,"y":150,"neighbour":-1},{"x":430,"y":180,"neighbour":4},{"x":330,"y":180,"neighbour":3},{"x":300,"y":150,"neighbour":1}]},{"id":3,"floor":0,"ceiling":60,"vertices":[{"x":300,"y":150,"neighbour":2},{"x":330,"y":180,"neighbour":-1},{"x":260,"y":240,"neighbour":-1},{"x":230,"y":210,"neighbour":-1}]},{"id":4,"floor":0,"ceiling":60,"vertices":[{"x":430,"y":180,"neighbour":-1},{"x":400,"y":200,"neighbour":5},{"x":360,"y":200,"neighbour":-1},{"x":330,"y":180,"neighbour":2}]},{"id":5,"floor":10,"ceiling":110,"vertices":[{"x":400,"y":200,"neighbour":-1},{"x":400,"y":220,"neighbour":6},{"x":360,"y":220,"neighbour":-1},{"x":360,"y":200,"neighbour":4}]},{"id":6,"floor":20,"ceiling":110,"vertices":[{"x":400,"y":220,"neighbour":-1},{"x":400,"y":240,"neighbour":7},{"x":360,"y":240,"neighbour":-1},{"x":360,"y":220,"neighbour":5}]},{"id":7,"floor":30,"ceiling":110,"vertices":[{"x":400,"y":240,"neighbour":-1},{"x":400,"y":260,"neighbour":8},{"x":360,"y":260,"neighbour":-1},{"x":360,"y":240,"neighbour":6}]},{"id":8,"floor":40,"ceiling":110,"vertices":[{"x":400,"y":260,"neighbour":-1},{"x":400,"y":280,"neighbour":9},{"x":360,"y":280,"neighbour":-1},{"x":360,"y":260,"neighbour":7}]},{"id":9,"floor":50,"ceiling":110,"vertices":[{"x":400,"y":280,"neighbour":-1},{"x":440,"y":280,"neighbour":-1},{"x":440,"y":390,"neighbour":-1},{"x":320,"y":390,"neighbour":-1},{"x":320,"y":280,"neighbour":-1},{"x":360,"y":280,"neighbour":8}]}],"enemies":[{"x":250,"y":100}]}
 
 /***/ }),
 /* 8 */
@@ -499,6 +535,8 @@ var Camera = function () {
             y: parent.y
         };
         this.sector = this.getActiveSector();
+
+        Camera.optimizeCanvas(element);
     }
 
     _createClass(Camera, [{
@@ -513,7 +551,7 @@ var Camera = function () {
             var _iteratorError = undefined;
 
             try {
-                for (var _iterator = this.world[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                for (var _iterator = this.world.sectors[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
                     var sector = _step.value;
 
                     var wallMatches = 0;
@@ -566,13 +604,12 @@ var Camera = function () {
     }, {
         key: 'changeSector',
         value: function changeSector() {
-            // console.log('moved', this.lastPosition, this.currentPosition);
             var _iteratorNormalCompletion2 = true;
             var _didIteratorError2 = false;
             var _iteratorError2 = undefined;
 
             try {
-                for (var _iterator2 = this.world[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+                for (var _iterator2 = this.world.sectors[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
                     var sector = _step2.value;
 
                     for (var i = 0; i < sector.vertices.length; i++) {
@@ -607,33 +644,19 @@ var Camera = function () {
             }
         }
     }, {
-        key: 'render',
-        value: function render() {
-            if (!this.world) {
-                throw new CameraException('No world to render');
-            }
-
-            if (this.isMoving()) {
-                this.changeSector();
-            }
-
-            this.clear();
-
-            var sector = this.world[this.sector];
-
+        key: 'renderSector',
+        value: function renderSector(sector, sx1, sx2, ytop, ybottom) {
             if (!sector) {
                 return false;
             }
 
             for (var i = 0; i < sector.vertices.length; i++) {
-                /* Acquire the x,y coordinates of the two vertexes forming the edge of the sector */
-                /* Transform the vertices into the player's view */
                 var vx1 = sector.vertices[i].x - this.parent.x;
                 var vy1 = sector.vertices[i].y - this.parent.y;
                 var vx2 = (i >= sector.vertices.length - 1 ? sector.vertices[0].x : sector.vertices[i + 1].x) - this.parent.x;
                 var vy2 = (i >= sector.vertices.length - 1 ? sector.vertices[0].y : sector.vertices[i + 1].y) - this.parent.y;
 
-                /* Rotate them around the player's view */
+                // rotate points around player
                 var angle = (0, _utils.toRadians)(this.parent.rotation);
                 var pcos = Math.cos(angle);
                 var psin = Math.sin(angle);
@@ -646,30 +669,13 @@ var Camera = function () {
                 if (tz1 <= 0 && tz2 <= 0) continue;
 
                 /* Is any part of the wall behind the player */
-                if (tz1 <= 0 || tz2 <= 0) {
-                    var nearz = 5; // Not sure why this needs to be this
-                    var farz = 5; // Not sure why this needs to be this
-                    var nearside = 0.00001; // Not sure why this needs to be this
-                    var farside = 20; // Not sure why this needs to be this
-
-                    // Find an intersection between the wall and the approximate edges of player's view
-                    var i1 = (0, _utils.intersect)(tx1, tz1, tx2, tz2, -nearside, nearz, -farside, farz);
-                    var i2 = (0, _utils.intersect)(tx1, tz1, tx2, tz2, nearside, nearz, farside, farz);
-
-                    if (tz1 < nearz) {
-                        if (i1.y > 0) {
-                            tx1 = i1.x;tz1 = i1.y;
-                        } else {
-                            tx1 = i2.x;tz1 = i2.y;
-                        }
-                    }
-                    if (tz2 < nearz) {
-                        if (i1.y > 0) {
-                            tx2 = i1.x;tz2 = i1.y;
-                        } else {
-                            tx2 = i2.x;tz2 = i2.y;
-                        }
-                    }
+                if (tz1 <= 0) {
+                    tx1 = (0.01 - tz1) * (tx2 - tx1) / (tz2 - tz1) + tx1;
+                    tz1 = 0.01;
+                }
+                if (tz2 <= 0) {
+                    tx2 = (0.01 - tz2) * (tx1 - tx2) / (tz1 - tz2) + tx2;
+                    tz2 = 0.01;
                 }
 
                 /* Do perspective transformation */
@@ -695,8 +701,8 @@ var Camera = function () {
                 var neighbour = sector.vertices[i].neighbour;
 
                 if (neighbour > -1) {
-                    nyceil = this.world[neighbour].ceiling - (this.parent.z + this.z);
-                    nyfloor = this.world[neighbour].floor - (this.parent.z + this.z);
+                    nyceil = this.world.sectors[neighbour].ceiling - (this.parent.z + this.z);
+                    nyfloor = this.world.sectors[neighbour].floor - (this.parent.z + this.z);
                 }
 
                 var ny1a = this.height / 2 + -this.yaw(nyceil, tz1) * yscale1;
@@ -704,126 +710,176 @@ var Camera = function () {
                 var ny2a = this.height / 2 + -this.yaw(nyceil, tz2) * yscale2;
                 var ny2b = this.height / 2 + -this.yaw(nyfloor, tz2) * yscale2;
 
-                var beginX = Math.max(x1, 0);
-                var endX = Math.min(x1, this.width - 1);
+                var beginX = parseInt(Math.max(x1, sx1));
+                var endX = parseInt(Math.min(x2, sx2));
 
-                var ya_int = (0, _utils.scalerInit)(x1, beginX, x2, y1a, y2a);
-                var yb_int = (0, _utils.scalerInit)(x1, beginX, x2, y1b, y2b);
-                var nya_int = (0, _utils.scalerInit)(x1, beginX, x2, ny1a, ny2a);
-                var nyb_int = (0, _utils.scalerInit)(x1, beginX, x2, ny1b, ny2b);
-
-                // for(var x = beginX; x <= endX; x++){
-                //     const ya = scalerNext(ya_int);
-                //     const yb = scalerNext(yb_int);
-
-                //     const cya = clamp(ya, );
-
-                //     // int ya = Scaler_Next(&ya_int);
-                //     // int yb = Scaler_Next(&yb_int);
-                //     // /* Clamp the ya & yb */
-                //     // int cya = clamp(ya, ytop[x],ybottom[x]);
-                //     // int cyb = clamp(yb, ytop[x],ybottom[x]);
-                // }
-
-
-                // int beginx = max(x1, now.sx1), endx = min(x2, now.sx2);
-
-                /* Disable by default */
-                /* Use the following to draw out rotated vectors */
-                // this.context.save();
-                // this.context.beginPath();
-                // this.context.strokeStyle = 'black';
-                // this.context.moveTo(tx1 + (this.width / 2), tz1 + (this.height / 2));
-                // this.context.lineTo(tx2 + (this.width / 2), tz2 + (this.height / 2));
-                // this.context.stroke();
-                // this.context.closePath();
-                // this.context.restore();  
-
-                /* Use the following to draw perspective transformed vertices */
-                this.context.save();
-                // Draws lines between vertices
-
-                this.context.strokeStyle = 'black';
-
-                if (neighbour > -1) {
-                    this.context.fillStyle = '#7000c2';
-
-                    // If neighbour ceiling is lower than current sector ceiling, render it
-                    if (this.world[neighbour].ceiling < sector.ceiling) {
-                        // Draw ceiling of neighbour
-                        this.context.beginPath();
-                        this.context.moveTo(x1, y1a);
-                        this.context.lineTo(x2, y2a);
-                        this.context.lineTo(x2, ny2a);
-                        this.context.lineTo(x1, ny1a);
-                        this.context.lineTo(x1, y1a);
-                        this.context.stroke();
-                        this.context.fill();
-                        this.context.closePath();
-                    } else {
-                        ny1a = y1a;
-                        ny2a = y2a;
-                    }
-
-                    // If neighbour floor is higher than current sector floor, render it
-                    if (this.world[neighbour].floor > sector.floor) {
-                        // Draw floor of neighbour
-                        this.context.beginPath();
-                        this.context.moveTo(x1, y1b);
-                        this.context.lineTo(x2, y2b);
-                        this.context.lineTo(x2, ny2b);
-                        this.context.lineTo(x1, ny1b);
-                        this.context.lineTo(x1, y1b);
-                        this.context.stroke();
-                        this.context.fill();
-                        this.context.closePath();
-                    } else {
-                        ny1b = y1b;
-                        ny2b = y2b;
-                    }
-
-                    // Render portal
-                    this.context.beginPath();
-                    this.context.fillStyle = '#ac0002';
-                    this.context.moveTo(x1, ny1a);
-                    this.context.lineTo(x2, ny2a);
-                    this.context.lineTo(x2, ny2b);
-                    this.context.lineTo(x1, ny1b);
-                    this.context.lineTo(x1, ny1b);
-                    this.context.stroke();
-                    this.context.fill();
-                    this.context.closePath();
-                } else {
-                    this.context.fillStyle = '#aba9ab';
-                    // Draw Wall
-                    this.context.moveTo(x1, y1a);
-                    this.context.lineTo(x2, y2a);
-                    this.context.lineTo(x2, y2b);
-                    this.context.lineTo(x1, y1b);
-                    this.context.lineTo(x1, y1a);
-                    this.context.stroke();
-                    this.context.fill();
+                // Is the wall on screen
+                if (endX < 0 || beginX > this.width) {
+                    continue;
                 }
 
-                // Draws vertices
-                this.context.fillStyle = '#e74c3c';
-                var vertexSize = 4;
-                this.context.beginPath();
-                this.context.fillRect(x1 - vertexSize / 2, y1a - vertexSize / 2, vertexSize, vertexSize);
-                this.context.fillRect(x1 - vertexSize / 2, y1b - vertexSize / 2, vertexSize, vertexSize);
-                this.context.fillRect(x2 - vertexSize / 2, y2a - vertexSize / 2, vertexSize, vertexSize);
-                this.context.fillRect(x2 - vertexSize / 2, y2b - vertexSize / 2, vertexSize, vertexSize);
-                this.context.closePath();
-                this.context.restore();
+                var nytop = [];
+                var nybottom = [];
+
+                for (var x = beginX; x < endX; x++) {
+                    /* Acquire the Y coordinates for our floor & ceiling for this X coordinate */
+                    var ya = (x - x1) * (y2a - y1a) / (x2 - x1) + y1a;
+                    var yb = (x - x1) * (y2b - y1b) / (x2 - x1) + y1b;
+
+                    /* Clamp the ya & yb */
+                    var cya = (0, _utils.clamp)(ya, ytop[x], ybottom[x]);
+                    var cyb = (0, _utils.clamp)(yb, ytop[x], ybottom[x]);
+
+                    nytop[x] = cya + 1;
+                    nybottom[x] = cyb;
+
+                    /* Render ceiling: everything above this sector's ceiling height. */
+                    this.vline(x, ytop[x], cya + 1, '#34495e');
+                    /* Render floor: everything below this sector's floor height. */
+                    this.vline(x, cyb, ybottom[x], '#3498db');
+
+                    if (neighbour < 0) {
+                        this.vline(x, cya + 1, cyb + 1, x == beginX || x == endX ? '#000000' : '#ecf0f1');
+                    } else {
+                        /* Aquire the Y coordinates for our neighbour's floor and ceiling for this X coordinate */
+                        var nya = (x - x1) * (ny2a - ny1a) / (x2 - x1) + ny1a;
+                        var nyb = (x - x1) * (ny2b - ny1b) / (x2 - x1) + ny1b;
+
+                        var cnya = (0, _utils.clamp)(nya, ytop[x], ybottom[x]);
+                        var cnyb = (0, _utils.clamp)(nyb, ytop[x], ybottom[x]);
+
+                        // If our ceiling is higher than the neighours ceiling, render it
+                        if (cnya > cya) {
+                            this.vline(x, cya, cnya + 1, x == beginX || x == endX ? '#000000' : '#ecf0f1');
+                            nytop[x] = (0, _utils.clamp)(cnya, nytop[x], this.height); // 199 is likely not correct
+                        } else {
+                            nytop[x] = (0, _utils.clamp)(cya, nytop[x], this.height);
+                        }
+
+                        // If our floor is lower than the neighbours floor, render it
+                        if (cyb > cnyb) {
+                            this.vline(x, cnyb - 1, cyb, x == beginX || x == endX ? '#000000' : '#2980b9');
+                            nybottom[x] = (0, _utils.clamp)(cnyb, 0, ybottom[x]);
+                        } else {
+                            nybottom[x] = (0, _utils.clamp)(cyb, 0, ybottom[x]);
+                        }
+                    }
+                }
+
+                if (neighbour > -1) {
+                    this.renderSector(this.world.sectors[neighbour], beginX, endX, nytop, nybottom);
+                }
+            }
+        }
+    }, {
+        key: 'renderSprites',
+        value: function renderSprites() {
+            var _iteratorNormalCompletion3 = true;
+            var _didIteratorError3 = false;
+            var _iteratorError3 = undefined;
+
+            try {
+                for (var _iterator3 = this.world.enemies[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
+                    var sprite = _step3.value;
+
+                    var vx1 = sprite.x - this.parent.x;
+                    var vy1 = sprite.y - this.parent.y;
+
+                    // rotate sprite around player
+                    var angle = (0, _utils.toRadians)(this.parent.rotation);
+                    var pcos = Math.cos(angle);
+                    var psin = Math.sin(angle);
+                    var otx1 = vx1 * psin - vy1 * pcos;
+                    var tz1 = vx1 * pcos + vy1 * psin;
+
+                    /* Is the wall at least partially in front of the player? */
+                    if (tz1 <= 0) continue;
+
+                    /* Do perspective transformation */
+                    var tx1 = otx1 - 5; // 5 needs to be sprite size / 2
+                    var tx2 = otx1 + 5; // 5 needs to be sprite size / 2
+                    var xscale1 = this.width * this.hfov / tz1;
+                    var yscale1 = this.height * this.vfov / tz1;
+                    var x1 = this.width / 2 + -tx1 * xscale1;
+                    var x2 = this.width / 2 + -tx2 * xscale1;
+                    var ox1 = this.width / 2 + -otx1 * xscale1;
+                    var diff = Math.max(x1, x2) - Math.min(x1, x2);
+                    var yfloor = 0 - (this.z + this.parent.z); // 0 needs to be sprite's z coordinate
+
+                    var y1b = this.height / 2 + -this.yaw(yfloor, tz1) * yscale1;
+                    var y1a = y1b - diff;
+
+                    // #TODO
+                    //    * Log all ytop's and ybottom's for each visibile sector. Then cross reference for masking sprite.
+                    //    * Draw sprite 1 column at a time.
+
+                    // Draw sprite outline
+                    this.context.beginPath();
+                    this.context.strokeStyle = '#000000';
+                    this.context.fillStyle = '#2ecc71';
+                    this.context.rect(x1 - diff, y1a, diff, diff);
+                    this.context.fill();
+                    this.context.stroke();
+                    this.context.closePath();
+
+                    // Draw centre line of sprite
+                    this.context.beginPath();
+                    this.context.strokeStyle = '#000000';
+                    this.context.moveTo(ox1, y1a);
+                    this.context.lineTo(ox1, y1b);
+                    this.context.stroke();
+                    this.context.closePath();
+                }
+            } catch (err) {
+                _didIteratorError3 = true;
+                _iteratorError3 = err;
+            } finally {
+                try {
+                    if (!_iteratorNormalCompletion3 && _iterator3.return) {
+                        _iterator3.return();
+                    }
+                } finally {
+                    if (_didIteratorError3) {
+                        throw _iteratorError3;
+                    }
+                }
+            }
+        }
+    }, {
+        key: 'vline',
+        value: function vline(x, y1, y2, color) {
+            this.context.beginPath();
+            this.context.strokeStyle = color;
+            this.context.moveTo(x - 0.5, y1);
+            this.context.lineTo(x - 0.5, y2);
+            this.context.stroke();
+            this.context.closePath();
+        }
+    }, {
+        key: 'render',
+        value: function render() {
+            if (!this.world) {
+                throw new CameraException('No world to render');
             }
 
-            /* Disable by default */
-            /* Use the following to draw out player for rotated vectors */
-            // this.context.beginPath();
-            // this.context.fillStyle = 'red';
-            // this.context.fillRect(this.width/2 - 4, this.height/2 - 4, 8, 8);
-            // this.context.closePath();
+            if (this.isMoving()) {
+                this.changeSector();
+            }
 
+            this.clear();
+
+            var sector = this.world.sectors[this.sector];
+
+            var ytop = [];
+            var ybottom = [];
+
+            for (var x = 0; x < this.width - 1; x++) {
+                ytop[x] = 0;
+                ybottom[x] = this.height - 1;
+            }
+
+            this.renderSector(sector, 0, this.width - 1, ytop, ybottom);
+            this.renderSprites();
             this.lastPosition = this.currentPosition;
         }
     }, {
@@ -833,6 +889,16 @@ var Camera = function () {
                 x: this.parent.x,
                 y: this.parent.y
             };
+        }
+    }], [{
+        key: 'optimizeCanvas',
+        value: function optimizeCanvas(canvas) {
+            // canvas.style.imageRendering = 'optimizeSpeed'; // Older versions of FF
+            // canvas.style.imageRendering = '-moz-crisp-edges'; // FF 6.0+
+            // canvas.style.imageRendering = '-webkit-optimize-contrast'; // Safari
+            // canvas.style.imageRendering = '-o-crisp-edges'; // Opera 12+
+            canvas.style.imageRendering = 'pixelated'; // Modern Browsers
+            // canvas.style['-ms-interpolation-mode'] = 'nearest-neighor'; // IE
         }
     }]);
 
@@ -908,10 +974,19 @@ Object.defineProperty(exports, 'updateTime', {
         return _time.updateTime;
     }
 });
+
+var _math = __webpack_require__(16);
+
+Object.defineProperty(exports, 'clamp', {
+    enumerable: true,
+    get: function get() {
+        return _math.clamp;
+    }
+});
 var scalerInit = exports.scalerInit = function scalerInit(a, b, c, d, f) {
     return {
         result: d + (b - 1 - a) * (f - d) / (c - a),
-        bob: Math.pow(f < d, c < a) ? -1 : 1,
+        bob: f < d ^ c < a ? -1 : 1,
         fd: Math.abs(f - d),
         ca: Math.abs(c - a),
         cache: (b - 1 - a) * Math.abs(f - d) % Math.abs(c - a)
@@ -919,18 +994,11 @@ var scalerInit = exports.scalerInit = function scalerInit(a, b, c, d, f) {
 };
 
 var scalerNext = exports.scalerNext = function scalerNext(scaler) {
-    var cache = scaler.cache;
-    var result = scaler.result;
-
-    for (cache += scaler.fd + scaler.fd; cache >= scaler.ca; cache -= scaler.ca) {
-        result += scaler.bop;
+    for (scaler.cache += scaler.fd; scaler.cache >= scaler.ca; scaler.cache -= scaler.ca) {
+        scaler.result += scaler.bob;
     }
 
-    return result;
-};
-
-var clamp = exports.clamp = function clamp(val, min, max) {
-    return Math.min(Math.max(min, val), max);
+    return scaler.result;
 };
 
 /***/ }),
@@ -967,16 +1035,6 @@ var cross = function cross(x0, y0, x1, y1) {
 
 var overlap = function overlap(a0, a1, b0, b1) {
     return Math.min(a0, a1) <= Math.max(b0, b1) && Math.min(b0, b1) <= Math.max(a0, a1);
-};
-
-var intersect = exports.intersect = function intersect(x1, y1, x2, y2, x3, y3, x4, y4) {
-    var x = cross(x1, y1, x2, y2);
-    var y = cross(x3, y3, x4, y4);
-    var det = cross(x1 - x2, y1 - y2, x3 - x4, y3 - y4);
-    x = cross(x, x1 - x2, y, x3 - x4) / det;
-    y = cross(x, y1 - y2, y, y3 - y4) / det;
-
-    return { x: x, y: y };
 };
 
 var intersectBox = exports.intersectBox = function intersectBox(x0, y0, x1, y1, x2, y2, x3, y3) {
@@ -1042,6 +1100,20 @@ var GameObject = function GameObject(_ref) {
 };
 
 exports.default = GameObject;
+
+/***/ }),
+/* 16 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+var clamp = exports.clamp = function clamp(val, min, max) {
+    return Math.min(Math.max(min, val), max);
+};
 
 /***/ })
 /******/ ]);
