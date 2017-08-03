@@ -13,6 +13,7 @@ export default class Game {
     }
 
     loop(){
+        // console.log(this.level);
         updateTime();
         this.player.update();
         this.drawMap();

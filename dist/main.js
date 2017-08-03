@@ -125,6 +125,7 @@ var Game = function () {
         value: function loop() {
             var _this = this;
 
+            // console.log(this.level);
             (0, _softwareRenderer.updateTime)();
             this.player.update();
             this.drawMap();
@@ -399,8 +400,16 @@ exports.default = Player;
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
+
+var _Enemy = __webpack_require__(17);
+
+var _Enemy2 = _interopRequireDefault(_Enemy);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 var levels = {
-    demo: __webpack_require__(7)
+    demo: __webpack_require__(7),
+    demo2: __webpack_require__(18)
 };
 
 function LevelException(message) {
@@ -410,7 +419,11 @@ function LevelException(message) {
 
 var loadLevel = function loadLevel(name) {
     if (levels[name]) {
-        return levels[name];
+        var level = levels[name];
+        level.enemies = level.enemies.map(function (enemy) {
+            return new _Enemy2.default({ x: enemy.x, y: enemy.y, sector: enemy.sector });
+        });
+        return level;
     } else {
         throw new LevelException('Invalid Level Name');
     }
@@ -422,7 +435,7 @@ exports.default = loadLevel;
 /* 7 */
 /***/ (function(module, exports) {
 
-module.exports = {"sectors":[{"id":0,"floor":0,"ceiling":60,"vertices":[{"x":20,"y":50,"neighbour":-1},{"x":50,"y":20,"neighbour":-1},{"x":150,"y":20,"neighbour":-1},{"x":180,"y":50,"neighbour":1},{"x":180,"y":150,"neighbour":-1},{"x":150,"y":180,"neighbour":-1},{"x":50,"y":180,"neighbour":-1},{"x":20,"y":150,"neighbour":-1}]},{"id":1,"floor":10,"ceiling":50,"vertices":[{"x":180,"y":50,"neighbour":-1},{"x":300,"y":50,"neighbour":2},{"x":300,"y":150,"neighbour":-1},{"x":180,"y":150,"neighbour":0}]},{"id":2,"floor":0,"ceiling":60,"vertices":[{"x":300,"y":50,"neighbour":-1},{"x":330,"y":20,"neighbour":-1},{"x":430,"y":20,"neighbour":-1},{"x":460,"y":50,"neighbour":-1},{"x":460,"y":150,"neighbour":-1},{"x":430,"y":180,"neighbour":4},{"x":330,"y":180,"neighbour":3},{"x":300,"y":150,"neighbour":1}]},{"id":3,"floor":0,"ceiling":60,"vertices":[{"x":300,"y":150,"neighbour":2},{"x":330,"y":180,"neighbour":-1},{"x":260,"y":240,"neighbour":-1},{"x":230,"y":210,"neighbour":-1}]},{"id":4,"floor":0,"ceiling":60,"vertices":[{"x":430,"y":180,"neighbour":-1},{"x":400,"y":200,"neighbour":5},{"x":360,"y":200,"neighbour":-1},{"x":330,"y":180,"neighbour":2}]},{"id":5,"floor":10,"ceiling":110,"vertices":[{"x":400,"y":200,"neighbour":-1},{"x":400,"y":220,"neighbour":6},{"x":360,"y":220,"neighbour":-1},{"x":360,"y":200,"neighbour":4}]},{"id":6,"floor":20,"ceiling":110,"vertices":[{"x":400,"y":220,"neighbour":-1},{"x":400,"y":240,"neighbour":7},{"x":360,"y":240,"neighbour":-1},{"x":360,"y":220,"neighbour":5}]},{"id":7,"floor":30,"ceiling":110,"vertices":[{"x":400,"y":240,"neighbour":-1},{"x":400,"y":260,"neighbour":8},{"x":360,"y":260,"neighbour":-1},{"x":360,"y":240,"neighbour":6}]},{"id":8,"floor":40,"ceiling":110,"vertices":[{"x":400,"y":260,"neighbour":-1},{"x":400,"y":280,"neighbour":9},{"x":360,"y":280,"neighbour":-1},{"x":360,"y":260,"neighbour":7}]},{"id":9,"floor":50,"ceiling":110,"vertices":[{"x":400,"y":280,"neighbour":-1},{"x":440,"y":280,"neighbour":-1},{"x":440,"y":390,"neighbour":-1},{"x":320,"y":390,"neighbour":-1},{"x":320,"y":280,"neighbour":-1},{"x":360,"y":280,"neighbour":8}]}],"enemies":[{"x":250,"y":100}]}
+module.exports = {"sectors":[{"id":0,"floor":0,"ceiling":60,"vertices":[{"x":20,"y":50,"neighbour":-1},{"x":50,"y":20,"neighbour":-1},{"x":150,"y":20,"neighbour":-1},{"x":180,"y":50,"neighbour":1},{"x":180,"y":150,"neighbour":-1},{"x":150,"y":180,"neighbour":-1},{"x":50,"y":180,"neighbour":-1},{"x":20,"y":150,"neighbour":-1}]},{"id":1,"floor":10,"ceiling":50,"vertices":[{"x":180,"y":50,"neighbour":-1},{"x":300,"y":50,"neighbour":2},{"x":300,"y":150,"neighbour":-1},{"x":180,"y":150,"neighbour":0}]},{"id":2,"floor":0,"ceiling":60,"vertices":[{"x":300,"y":50,"neighbour":-1},{"x":330,"y":20,"neighbour":-1},{"x":430,"y":20,"neighbour":-1},{"x":460,"y":50,"neighbour":-1},{"x":460,"y":150,"neighbour":-1},{"x":430,"y":180,"neighbour":4},{"x":330,"y":180,"neighbour":3},{"x":300,"y":150,"neighbour":1}]},{"id":3,"floor":0,"ceiling":60,"vertices":[{"x":300,"y":150,"neighbour":2},{"x":330,"y":180,"neighbour":-1},{"x":260,"y":240,"neighbour":-1},{"x":230,"y":210,"neighbour":-1}]},{"id":4,"floor":0,"ceiling":60,"vertices":[{"x":430,"y":180,"neighbour":-1},{"x":400,"y":200,"neighbour":5},{"x":360,"y":200,"neighbour":-1},{"x":330,"y":180,"neighbour":2}]},{"id":5,"floor":10,"ceiling":110,"vertices":[{"x":400,"y":200,"neighbour":-1},{"x":400,"y":220,"neighbour":6},{"x":360,"y":220,"neighbour":-1},{"x":360,"y":200,"neighbour":4}]},{"id":6,"floor":20,"ceiling":110,"vertices":[{"x":400,"y":220,"neighbour":-1},{"x":400,"y":240,"neighbour":7},{"x":360,"y":240,"neighbour":-1},{"x":360,"y":220,"neighbour":5}]},{"id":7,"floor":30,"ceiling":110,"vertices":[{"x":400,"y":240,"neighbour":-1},{"x":400,"y":260,"neighbour":8},{"x":360,"y":260,"neighbour":-1},{"x":360,"y":240,"neighbour":6}]},{"id":8,"floor":40,"ceiling":110,"vertices":[{"x":400,"y":260,"neighbour":-1},{"x":400,"y":280,"neighbour":9},{"x":360,"y":280,"neighbour":-1},{"x":360,"y":260,"neighbour":7}]},{"id":9,"floor":50,"ceiling":110,"vertices":[{"x":400,"y":280,"neighbour":-1},{"x":440,"y":280,"neighbour":-1},{"x":440,"y":390,"neighbour":-1},{"x":320,"y":390,"neighbour":-1},{"x":320,"y":280,"neighbour":-1},{"x":360,"y":280,"neighbour":8}]}],"enemies":[{"x":250,"y":100,"sector":1}]}
 
 /***/ }),
 /* 8 */
@@ -535,6 +548,10 @@ var Camera = function () {
             y: parent.y
         };
         this.sector = this.getActiveSector();
+        this.cached = {
+            ytop: [],
+            ybottom: []
+        };
 
         Camera.optimizeCanvas(element);
     }
@@ -713,6 +730,8 @@ var Camera = function () {
                 var beginX = parseInt(Math.max(x1, sx1));
                 var endX = parseInt(Math.min(x2, sx2));
 
+                var zInt = (0, _utils.scalerInit)(x1, beginX, x2, tz1 / 4, tz2 / 4);
+
                 // Is the wall on screen
                 if (endX < 0 || beginX > this.width) {
                     continue;
@@ -726,20 +745,24 @@ var Camera = function () {
                     var ya = (x - x1) * (y2a - y1a) / (x2 - x1) + y1a;
                     var yb = (x - x1) * (y2b - y1b) / (x2 - x1) + y1b;
 
+                    var z = (0, _utils.scalerNext)(zInt);
+                    zInt.result = z;
+
                     /* Clamp the ya & yb */
                     var cya = (0, _utils.clamp)(ya, ytop[x], ybottom[x]);
                     var cyb = (0, _utils.clamp)(yb, ytop[x], ybottom[x]);
 
-                    nytop[x] = cya + 1;
-                    nybottom[x] = cyb;
+                    nytop[x] = parseInt(cya + 1);
+                    nybottom[x] = parseInt(cyb);
 
                     /* Render ceiling: everything above this sector's ceiling height. */
                     this.vline(x, ytop[x], cya + 1, '#34495e');
                     /* Render floor: everything below this sector's floor height. */
-                    this.vline(x, cyb, ybottom[x], '#3498db');
+                    this.vline(x, cyb, ybottom[x] + 1, '#3498db');
 
                     if (neighbour < 0) {
-                        this.vline(x, cya + 1, cyb + 1, x == beginX || x == endX ? '#000000' : '#ecf0f1');
+                        var r = parseInt(255 - z);
+                        this.vline(x, cya + 1, cyb + 1, x == beginX || x == endX ? 'rgb(' + (r - 25) + ', ' + (r - 25) + ', ' + (r - 25) + ')' : 'rgb(' + r + ', ' + r + ', ' + r + ')');
                     } else {
                         /* Aquire the Y coordinates for our neighbour's floor and ceiling for this X coordinate */
                         var nya = (x - x1) * (ny2a - ny1a) / (x2 - x1) + ny1a;
@@ -750,23 +773,35 @@ var Camera = function () {
 
                         // If our ceiling is higher than the neighours ceiling, render it
                         if (cnya > cya) {
-                            this.vline(x, cya, cnya + 1, x == beginX || x == endX ? '#000000' : '#ecf0f1');
-                            nytop[x] = (0, _utils.clamp)(cnya, nytop[x], this.height); // 199 is likely not correct
+                            var ceilingColor = parseInt(255 - z);
+                            this.vline(x, cya, cnya + 1, x == beginX || x == endX ? 'rgb(' + (ceilingColor - 25) + ', ' + (ceilingColor - 25) + ', ' + (ceilingColor - 25) + ')' : 'rgb(' + ceilingColor + ', ' + ceilingColor + ', ' + ceilingColor + ')');
+                            nytop[x] = parseInt((0, _utils.clamp)(cnya, nytop[x], this.height));
                         } else {
-                            nytop[x] = (0, _utils.clamp)(cya, nytop[x], this.height);
+                            nytop[x] = parseInt((0, _utils.clamp)(cya, nytop[x], this.height));
                         }
 
                         // If our floor is lower than the neighbours floor, render it
                         if (cyb > cnyb) {
-                            this.vline(x, cnyb - 1, cyb, x == beginX || x == endX ? '#000000' : '#2980b9');
-                            nybottom[x] = (0, _utils.clamp)(cnyb, 0, ybottom[x]);
+                            var floorColor = {
+                                r: parseInt(52 - z),
+                                g: parseInt(152 - z),
+                                b: parseInt(219 - z)
+                            };
+                            this.vline(x, cnyb - 1, cyb, x == beginX || x == endX ? 'rgb(' + (floorColor.r - 25) + ', ' + (floorColor.g - 25) + ', ' + (floorColor.b - 25) + ')' : 'rgb(' + floorColor.r + ', ' + floorColor.g + ', ' + floorColor.b + ')');
+                            nybottom[x] = parseInt((0, _utils.clamp)(cnyb, 0, ybottom[x]));
                         } else {
-                            nybottom[x] = (0, _utils.clamp)(cyb, 0, ybottom[x]);
+                            nybottom[x] = parseInt((0, _utils.clamp)(cyb, 0, ybottom[x]));
                         }
                     }
                 }
 
                 if (neighbour > -1) {
+                    if (ybottom.length) {
+                        this.cached.ybottom[sector.id] = ybottom;
+                    }
+                    if (ytop.length) {
+                        this.cached.ytop[sector.id] = ytop;
+                    }
                     this.renderSector(this.world.sectors[neighbour], beginX, endX, nytop, nybottom);
                 }
             }
@@ -774,6 +809,10 @@ var Camera = function () {
     }, {
         key: 'renderSprites',
         value: function renderSprites() {
+            // console.log(this.cached, 'cached');
+            // console.log(this.world.enemies);
+
+
             var _iteratorNormalCompletion3 = true;
             var _didIteratorError3 = false;
             var _iteratorError3 = undefined;
@@ -782,7 +821,15 @@ var Camera = function () {
                 for (var _iterator3 = this.world.enemies[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
                     var sprite = _step3.value;
 
-                    var vx1 = sprite.x - this.parent.x;
+                    if (!this.cached.ybottom[sprite.sector] && !this.cached.ytop[sprite.sector]) {
+                        continue;
+                    }
+
+                    var mask = {
+                        ybottom: this.cached.ybottom[sprite.sector],
+                        ytop: this.cached.ytop[sprite.sector]
+                        // console.log(mask, sprite);
+                    };var vx1 = sprite.x - this.parent.x;
                     var vy1 = sprite.y - this.parent.y;
 
                     // rotate sprite around player
@@ -805,13 +852,27 @@ var Camera = function () {
                     var ox1 = this.width / 2 + -otx1 * xscale1;
                     var diff = Math.max(x1, x2) - Math.min(x1, x2);
                     var yfloor = 0 - (this.z + this.parent.z); // 0 needs to be sprite's z coordinate
-
                     var y1b = this.height / 2 + -this.yaw(yfloor, tz1) * yscale1;
                     var y1a = y1b - diff;
 
-                    // #TODO
-                    //    * Log all ytop's and ybottom's for each visibile sector. Then cross reference for masking sprite.
-                    //    * Draw sprite 1 column at a time.
+                    /* Calculate mask */
+                    // const ybottomEnd = Object.keys(mask.ybottom)[mask.ybottom.length-1];
+                    // const ybottomStart = Object.keys(mask.ybottom)[0];
+                    // const ytopEnd = Object.keys(mask.ytop)[mask.ytop.length-1];
+                    // const ytopStart = Object.keys(mask.ytop)[0];
+                    // const startRange = parseInt(Math.min(ybottomEnd, ytopEnd));
+                    // const endRange = parseInt(Math.max(ybottomStart, ytopStart));
+                    // const start = Math.min(startRange, endRange);
+                    // const end = Math.max(startRange, endRange);
+                    // const beginX = clamp(parseInt(x1-diff), start, end);
+                    // const endX = clamp(parseInt(x1), start, end);
+
+                    // /* TODO: Optimize this and fix bug where sprite disappears */
+                    // for(let x=beginX; x<=endX; x++){
+                    //     const topY = Math.max(y1a, mask.ytop[x]);
+                    //     const bottomY = Math.min(y1a+diff, mask.ybottom[x]);
+                    //     this.vline(x, topY, bottomY, '#2ecc71');
+                    // }
 
                     // Draw sprite outline
                     this.context.beginPath();
@@ -823,12 +884,12 @@ var Camera = function () {
                     this.context.closePath();
 
                     // Draw centre line of sprite
-                    this.context.beginPath();
-                    this.context.strokeStyle = '#000000';
-                    this.context.moveTo(ox1, y1a);
-                    this.context.lineTo(ox1, y1b);
-                    this.context.stroke();
-                    this.context.closePath();
+                    // this.context.beginPath();
+                    // this.context.strokeStyle = '#000000';
+                    // this.context.moveTo(ox1, y1a);
+                    // this.context.lineTo(ox1, y1b);
+                    // this.context.stroke();
+                    // this.context.closePath();
                 }
             } catch (err) {
                 _didIteratorError3 = true;
@@ -1114,6 +1175,45 @@ Object.defineProperty(exports, "__esModule", {
 var clamp = exports.clamp = function clamp(val, min, max) {
     return Math.min(Math.max(min, val), max);
 };
+
+/***/ }),
+/* 17 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Enemy = function Enemy(_ref) {
+    var _ref$x = _ref.x,
+        x = _ref$x === undefined ? 0 : _ref$x,
+        _ref$y = _ref.y,
+        y = _ref$y === undefined ? 0 : _ref$y,
+        _ref$z = _ref.z,
+        z = _ref$z === undefined ? 0 : _ref$z,
+        _ref$sector = _ref.sector,
+        sector = _ref$sector === undefined ? -1 : _ref$sector;
+
+    _classCallCheck(this, Enemy);
+
+    this.x = x;
+    this.y = y;
+    this.z = z;
+    this.sector = sector;
+};
+
+exports.default = Enemy;
+
+/***/ }),
+/* 18 */
+/***/ (function(module, exports) {
+
+module.exports = {"sectors":[{"id":0,"floor":0,"ceiling":6,"vertices":[{"x":2,"y":5,"neighbour":-1},{"x":5,"y":2,"neighbour":-1},{"x":15,"y":2,"neighbour":-1},{"x":18,"y":5,"neighbour":1},{"x":18,"y":15,"neighbour":-1},{"x":15,"y":18,"neighbour":-1},{"x":50,"y":18,"neighbour":-1},{"x":2,"y":15,"neighbour":-1}]},{"id":1,"floor":1,"ceiling":5,"vertices":[{"x":18,"y":5,"neighbour":-1},{"x":30,"y":5,"neighbour":2},{"x":30,"y":15,"neighbour":-1},{"x":18,"y":15,"neighbour":0}]},{"id":2,"floor":0,"ceiling":6,"vertices":[{"x":30,"y":5,"neighbour":-1},{"x":33,"y":2,"neighbour":-1},{"x":43,"y":2,"neighbour":-1},{"x":46,"y":5,"neighbour":-1},{"x":46,"y":15,"neighbour":-1},{"x":43,"y":18,"neighbour":4},{"x":33,"y":18,"neighbour":3},{"x":30,"y":15,"neighbour":1}]},{"id":3,"floor":0,"ceiling":6,"vertices":[{"x":30,"y":15,"neighbour":2},{"x":33,"y":18,"neighbour":-1},{"x":26,"y":24,"neighbour":-1},{"x":23,"y":21,"neighbour":-1}]},{"id":4,"floor":0,"ceiling":6,"vertices":[{"x":43,"y":18,"neighbour":-1},{"x":40,"y":20,"neighbour":5},{"x":36,"y":20,"neighbour":-1},{"x":33,"y":18,"neighbour":2}]},{"id":5,"floor":1,"ceiling":11,"vertices":[{"x":40,"y":20,"neighbour":-1},{"x":40,"y":22,"neighbour":6},{"x":36,"y":22,"neighbour":-1},{"x":36,"y":20,"neighbour":4}]},{"id":6,"floor":2,"ceiling":11,"vertices":[{"x":40,"y":22,"neighbour":-1},{"x":40,"y":24,"neighbour":7},{"x":36,"y":24,"neighbour":-1},{"x":36,"y":22,"neighbour":5}]},{"id":7,"floor":3,"ceiling":11,"vertices":[{"x":40,"y":24,"neighbour":-1},{"x":40,"y":26,"neighbour":8},{"x":36,"y":26,"neighbour":-1},{"x":36,"y":24,"neighbour":6}]},{"id":8,"floor":4,"ceiling":11,"vertices":[{"x":40,"y":26,"neighbour":-1},{"x":40,"y":28,"neighbour":9},{"x":36,"y":28,"neighbour":-1},{"x":36,"y":26,"neighbour":7}]},{"id":9,"floor":5,"ceiling":11,"vertices":[{"x":40,"y":28,"neighbour":-1},{"x":44,"y":28,"neighbour":-1},{"x":44,"y":39,"neighbour":-1},{"x":32,"y":39,"neighbour":-1},{"x":32,"y":28,"neighbour":-1},{"x":36,"y":28,"neighbour":8}]}],"enemies":[]}
 
 /***/ })
 /******/ ]);
