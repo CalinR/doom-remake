@@ -60,24 +60,144 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 1);
+/******/ 	return __webpack_require__(__webpack_require__.s = 3);
 /******/ })
 /************************************************************************/
 /******/ ([
-/* 0 */,
+/* 0 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _degreeConversion = __webpack_require__(10);
+
+Object.defineProperty(exports, 'toRadians', {
+    enumerable: true,
+    get: function get() {
+        return _degreeConversion.toRadians;
+    }
+});
+Object.defineProperty(exports, 'toDegrees', {
+    enumerable: true,
+    get: function get() {
+        return _degreeConversion.toDegrees;
+    }
+});
+
+var _intersect = __webpack_require__(11);
+
+Object.defineProperty(exports, 'intersect', {
+    enumerable: true,
+    get: function get() {
+        return _intersect.intersect;
+    }
+});
+Object.defineProperty(exports, 'intersectBox', {
+    enumerable: true,
+    get: function get() {
+        return _intersect.intersectBox;
+    }
+});
+Object.defineProperty(exports, 'pointSide', {
+    enumerable: true,
+    get: function get() {
+        return _intersect.pointSide;
+    }
+});
+
+var _time = __webpack_require__(12);
+
+Object.defineProperty(exports, 'deltaTime', {
+    enumerable: true,
+    get: function get() {
+        return _time.deltaTime;
+    }
+});
+Object.defineProperty(exports, 'lastUpdate', {
+    enumerable: true,
+    get: function get() {
+        return _time.lastUpdate;
+    }
+});
+Object.defineProperty(exports, 'updateTime', {
+    enumerable: true,
+    get: function get() {
+        return _time.updateTime;
+    }
+});
+
+var _math = __webpack_require__(13);
+
+Object.defineProperty(exports, 'clamp', {
+    enumerable: true,
+    get: function get() {
+        return _math.clamp;
+    }
+});
+var scalerInit = exports.scalerInit = function scalerInit(a, b, c, d, f) {
+    return {
+        result: d + (b - 1 - a) * (f - d) / (c - a),
+        bob: f < d ^ c < a ? -1 : 1,
+        fd: Math.abs(f - d),
+        ca: Math.abs(c - a),
+        cache: (b - 1 - a) * Math.abs(f - d) % Math.abs(c - a)
+    };
+};
+
+var scalerNext = exports.scalerNext = function scalerNext(scaler) {
+    for (scaler.cache += scaler.fd; scaler.cache >= scaler.ca; scaler.cache -= scaler.ca) {
+        scaler.result += scaler.bob;
+    }
+
+    return scaler.result;
+};
+
+/***/ }),
 /* 1 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var _Game = __webpack_require__(2);
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Scene = exports.GameObject = exports.Camera = undefined;
 
-var _Game2 = _interopRequireDefault(_Game);
+var _utils = __webpack_require__(0);
+
+Object.keys(_utils).forEach(function (key) {
+  if (key === "default" || key === "__esModule") return;
+  Object.defineProperty(exports, key, {
+    enumerable: true,
+    get: function get() {
+      return _utils[key];
+    }
+  });
+});
+
+var _Camera = __webpack_require__(14);
+
+var _Camera2 = _interopRequireDefault(_Camera);
+
+var _GameObject = __webpack_require__(2);
+
+var _GameObject2 = _interopRequireDefault(_GameObject);
+
+var _Scene = __webpack_require__(15);
+
+var _Scene2 = _interopRequireDefault(_Scene);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-new _Game2.default();
+exports.Camera = _Camera2.default;
+exports.GameObject = _GameObject2.default;
+exports.Scene = _Scene2.default;
 
 /***/ }),
 /* 2 */
@@ -90,181 +210,118 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
-
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _loadLevel = __webpack_require__(6);
-
-var _loadLevel2 = _interopRequireDefault(_loadLevel);
-
-var _softwareRenderer = __webpack_require__(8);
-
-var _Player = __webpack_require__(3);
-
-var _Player2 = _interopRequireDefault(_Player);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+var _utils = __webpack_require__(0);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var Game = function () {
-    function Game() {
-        _classCallCheck(this, Game);
+var id = 0;
 
-        this.mapCanvas = document.getElementById('map');
-        this.mapContext = this.mapCanvas.getContext('2d');
-        this.level = (0, _loadLevel2.default)('demo');
-        this.player = new _Player2.default({ x: 110, y: 100, z: 0, rotation: 0, controls: { forward: 'ArrowUp', backward: 'ArrowDown', left: 'ArrowLeft', right: 'ArrowRight' }, world: this.level });
-        this.camera = new _softwareRenderer.Camera({ z: 25, parent: this.player, world: this.level, element: document.getElementById('camera') });
-        this.loop();
+var GameObject = function () {
+    function GameObject(_ref) {
+        var _ref$x = _ref.x,
+            x = _ref$x === undefined ? 0 : _ref$x,
+            _ref$y = _ref.y,
+            y = _ref$y === undefined ? 0 : _ref$y,
+            _ref$z = _ref.z,
+            z = _ref$z === undefined ? 0 : _ref$z,
+            _ref$rotation = _ref.rotation,
+            rotation = _ref$rotation === undefined ? 0 : _ref$rotation,
+            _ref$sector = _ref.sector,
+            sector = _ref$sector === undefined ? null : _ref$sector;
+
+        _classCallCheck(this, GameObject);
+
+        this.id = id++;
+        this.state = {
+            x: x,
+            y: y,
+            z: z,
+            rotation: rotation,
+            sector: sector
+        };
+        this.onMove = null;
     }
 
-    _createClass(Game, [{
-        key: 'loop',
-        value: function loop() {
-            var _this = this;
-
-            // console.log(this.level);
-            (0, _softwareRenderer.updateTime)();
-            this.player.update();
-            this.drawMap();
-            this.drawPlayer();
-            this.drawEnemies();
-            this.camera.render();
-            window.requestAnimationFrame(function () {
-                return _this.loop();
-            });
-        }
-    }, {
-        key: 'drawMap',
-        value: function drawMap() {
-            this.mapContext.clearRect(0, 0, this.mapCanvas.width, this.mapCanvas.height);
-            this.mapContext.save();
-            var _iteratorNormalCompletion = true;
-            var _didIteratorError = false;
-            var _iteratorError = undefined;
-
-            try {
-                for (var _iterator = this.level.sectors[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-                    var sector = _step.value;
-
-                    this.mapContext.beginPath();
-                    var _iteratorNormalCompletion2 = true;
-                    var _didIteratorError2 = false;
-                    var _iteratorError2 = undefined;
-
-                    try {
-                        for (var _iterator2 = sector.vertices.entries()[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-                            var _step2$value = _slicedToArray(_step2.value, 2),
-                                index = _step2$value[0],
-                                vertex = _step2$value[1];
-
-                            if (index === 0) {
-                                this.mapContext.moveTo(vertex.x, vertex.y);
-                            } else {
-                                this.mapContext.strokeStyle = 'black';
-                                this.mapContext.lineTo(vertex.x, vertex.y);
-                            }
-                        }
-                    } catch (err) {
-                        _didIteratorError2 = true;
-                        _iteratorError2 = err;
-                    } finally {
-                        try {
-                            if (!_iteratorNormalCompletion2 && _iterator2.return) {
-                                _iterator2.return();
-                            }
-                        } finally {
-                            if (_didIteratorError2) {
-                                throw _iteratorError2;
-                            }
-                        }
-                    }
-
-                    this.mapContext.lineTo(sector.vertices[0].x, sector.vertices[0].y);
-                    if (this.camera.sector == sector.id) {
-                        this.mapContext.fillStyle = '#bdc3c7';
-                        this.mapContext.fill();
-                    }
-                    this.mapContext.stroke();
-                    this.mapContext.closePath();
-                }
-            } catch (err) {
-                _didIteratorError = true;
-                _iteratorError = err;
-            } finally {
-                try {
-                    if (!_iteratorNormalCompletion && _iterator.return) {
-                        _iterator.return();
-                    }
-                } finally {
-                    if (_didIteratorError) {
-                        throw _iteratorError;
-                    }
+    _createClass(GameObject, [{
+        key: 'queueUpdate',
+        value: function queueUpdate() {
+            var oldState = Object.assign({}, this.state);
+            this.update();
+            if (JSON.stringify(this.state) !== JSON.stringify(oldState)) {
+                if (typeof this.onMove == 'function') {
+                    this.onMove(oldState, Object.assign({}, this.state));
                 }
             }
-
-            this.mapContext.restore();
         }
     }, {
-        key: 'drawPlayer',
-        value: function drawPlayer() {
-            var playerSize = 6;
-            this.mapContext.save();
-            this.mapContext.beginPath();
-            this.mapContext.translate(this.player.x, this.player.y);
-            this.mapContext.rotate((0, _softwareRenderer.toRadians)(this.player.rotation));
-            this.mapContext.fillStyle = 'red';
-            this.mapContext.fillRect(0, -1, 10, 2);
-            this.mapContext.fillRect(-playerSize / 2, -playerSize / 2, playerSize, playerSize);
-            this.mapContext.closePath();
-            this.mapContext.restore();
+        key: 'update',
+        value: function update() {}
+    }, {
+        key: 'x',
+        get: function get() {
+            return this.state.x;
+        },
+        set: function set(x) {
+            this.state.x = x;
         }
     }, {
-        key: 'drawEnemies',
-        value: function drawEnemies() {
-            var enemySize = 6;
-            var _iteratorNormalCompletion3 = true;
-            var _didIteratorError3 = false;
-            var _iteratorError3 = undefined;
-
-            try {
-                for (var _iterator3 = this.level.enemies[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
-                    var enemy = _step3.value;
-
-                    this.mapContext.save();
-                    this.mapContext.beginPath();
-                    this.mapContext.translate(enemy.x, enemy.y);
-                    this.mapContext.fillStyle = 'blue';
-                    this.mapContext.fillRect(-enemySize / 2, -enemySize / 2, enemySize, enemySize);
-                    this.mapContext.closePath();
-                    this.mapContext.restore();
-                }
-            } catch (err) {
-                _didIteratorError3 = true;
-                _iteratorError3 = err;
-            } finally {
-                try {
-                    if (!_iteratorNormalCompletion3 && _iterator3.return) {
-                        _iterator3.return();
-                    }
-                } finally {
-                    if (_didIteratorError3) {
-                        throw _iteratorError3;
-                    }
-                }
-            }
+        key: 'y',
+        get: function get() {
+            return this.state.y;
+        },
+        set: function set(y) {
+            this.state.y = y;
+        }
+    }, {
+        key: 'z',
+        get: function get() {
+            return this.state.z;
+        },
+        set: function set(z) {
+            this.state.z = z;
+        }
+    }, {
+        key: 'rotation',
+        get: function get() {
+            return this.state.rotation;
+        },
+        set: function set(rotation) {
+            this.state.rotation = rotation;
+        }
+    }, {
+        key: 'sector',
+        get: function get() {
+            return this.state.sector;
+        },
+        set: function set(sector) {
+            this.state.sector = sector;
         }
     }]);
 
-    return Game;
+    return GameObject;
 }();
 
-exports.default = Game;
+exports.default = GameObject;
 
 /***/ }),
 /* 3 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _Game = __webpack_require__(4);
+
+var _Game2 = _interopRequireDefault(_Game);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+new _Game2.default();
+
+/***/ }),
+/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -276,7 +333,162 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _softwareRenderer = __webpack_require__(8);
+var _loadLevel = __webpack_require__(5);
+
+var _loadLevel2 = _interopRequireDefault(_loadLevel);
+
+var _softwareRenderer = __webpack_require__(1);
+
+var _Player = __webpack_require__(9);
+
+var _Player2 = _interopRequireDefault(_Player);
+
+var _Map = __webpack_require__(16);
+
+var _Map2 = _interopRequireDefault(_Map);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Game = function () {
+    function Game() {
+        _classCallCheck(this, Game);
+
+        this.map = new _Map2.default(document.getElementById('map'));
+        this.scene = new _softwareRenderer.Scene();
+        this.level = (0, _loadLevel2.default)('demo2');
+        // use the following coordinates to test bug
+        // 37.66, 23.99
+        // this.player = new Player({ x: 37.66, y: 23.99, z: 0, rotation: 89, controls: { forward: 'ArrowUp', backward: 'ArrowDown', left: 'ArrowLeft', right: 'ArrowRight' }});
+        this.player = new _Player2.default({ x: 15, y: 10, z: 0, rotation: 0, controls: { forward: 'ArrowUp', backward: 'ArrowDown', left: 'ArrowLeft', right: 'ArrowRight' } });
+        this.camera = new _softwareRenderer.Camera({ z: 3, parent: this.player, world: this.level, element: document.getElementById('camera') }); // Rework camera logic
+        this.scene.add(this.player);
+        this.scene.addWorld(this.level);
+        this.updateLoop();
+        window.player = this.player;
+    }
+
+    _createClass(Game, [{
+        key: 'updateLoop',
+        value: function updateLoop() {
+            var _this = this;
+
+            this.scene.update();
+            this.map.render(this.level, this.player);
+            this.camera.render();
+            // console.log(this.player.x, this.player.y);
+            window.requestAnimationFrame(function () {
+                return _this.updateLoop();
+            });
+        }
+    }]);
+
+    return Game;
+}();
+
+exports.default = Game;
+
+/***/ }),
+/* 5 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _Enemy = __webpack_require__(6);
+
+var _Enemy2 = _interopRequireDefault(_Enemy);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var levels = {
+    demo: __webpack_require__(7),
+    demo2: __webpack_require__(8)
+};
+
+function LevelException(message) {
+    this.message = message;
+    this.name = 'LevelException';
+}
+
+var loadLevel = function loadLevel(name) {
+    if (levels[name]) {
+        var level = levels[name];
+        level.enemies = level.enemies.map(function (enemy) {
+            return new _Enemy2.default({ x: enemy.x, y: enemy.y, sector: enemy.sector });
+        });
+        return level;
+    } else {
+        throw new LevelException('Invalid Level Name');
+    }
+};
+
+exports.default = loadLevel;
+
+/***/ }),
+/* 6 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Enemy = function Enemy(_ref) {
+    var _ref$x = _ref.x,
+        x = _ref$x === undefined ? 0 : _ref$x,
+        _ref$y = _ref.y,
+        y = _ref$y === undefined ? 0 : _ref$y,
+        _ref$z = _ref.z,
+        z = _ref$z === undefined ? 0 : _ref$z,
+        _ref$sector = _ref.sector,
+        sector = _ref$sector === undefined ? -1 : _ref$sector;
+
+    _classCallCheck(this, Enemy);
+
+    this.x = x;
+    this.y = y;
+    this.z = z;
+    this.sector = sector;
+};
+
+exports.default = Enemy;
+
+/***/ }),
+/* 7 */
+/***/ (function(module, exports) {
+
+module.exports = {"sectors":[{"id":0,"floor":0,"ceiling":60,"vertices":[{"x":20,"y":50,"neighbour":-1},{"x":50,"y":20,"neighbour":-1},{"x":150,"y":20,"neighbour":-1},{"x":180,"y":50,"neighbour":1},{"x":180,"y":150,"neighbour":-1},{"x":150,"y":180,"neighbour":-1},{"x":50,"y":180,"neighbour":-1},{"x":20,"y":150,"neighbour":-1}]},{"id":1,"floor":10,"ceiling":50,"vertices":[{"x":180,"y":50,"neighbour":-1},{"x":300,"y":50,"neighbour":2},{"x":300,"y":150,"neighbour":-1},{"x":180,"y":150,"neighbour":0}]},{"id":2,"floor":0,"ceiling":60,"vertices":[{"x":300,"y":50,"neighbour":-1},{"x":330,"y":20,"neighbour":-1},{"x":430,"y":20,"neighbour":-1},{"x":460,"y":50,"neighbour":-1},{"x":460,"y":150,"neighbour":-1},{"x":430,"y":180,"neighbour":4},{"x":330,"y":180,"neighbour":3},{"x":300,"y":150,"neighbour":1}]},{"id":3,"floor":0,"ceiling":60,"vertices":[{"x":300,"y":150,"neighbour":2},{"x":330,"y":180,"neighbour":-1},{"x":260,"y":240,"neighbour":-1},{"x":230,"y":210,"neighbour":-1}]},{"id":4,"floor":0,"ceiling":60,"vertices":[{"x":430,"y":180,"neighbour":-1},{"x":400,"y":200,"neighbour":5},{"x":360,"y":200,"neighbour":-1},{"x":330,"y":180,"neighbour":2}]},{"id":5,"floor":10,"ceiling":110,"vertices":[{"x":400,"y":200,"neighbour":-1},{"x":400,"y":220,"neighbour":6},{"x":360,"y":220,"neighbour":-1},{"x":360,"y":200,"neighbour":4}]},{"id":6,"floor":20,"ceiling":110,"vertices":[{"x":400,"y":220,"neighbour":-1},{"x":400,"y":240,"neighbour":7},{"x":360,"y":240,"neighbour":-1},{"x":360,"y":220,"neighbour":5}]},{"id":7,"floor":30,"ceiling":110,"vertices":[{"x":400,"y":240,"neighbour":-1},{"x":400,"y":260,"neighbour":8},{"x":360,"y":260,"neighbour":-1},{"x":360,"y":240,"neighbour":6}]},{"id":8,"floor":40,"ceiling":110,"vertices":[{"x":400,"y":260,"neighbour":-1},{"x":400,"y":280,"neighbour":9},{"x":360,"y":280,"neighbour":-1},{"x":360,"y":260,"neighbour":7}]},{"id":9,"floor":50,"ceiling":110,"vertices":[{"x":400,"y":280,"neighbour":-1},{"x":440,"y":280,"neighbour":-1},{"x":440,"y":390,"neighbour":-1},{"x":320,"y":390,"neighbour":-1},{"x":320,"y":280,"neighbour":-1},{"x":360,"y":280,"neighbour":8}]}],"enemies":[{"x":250,"y":100,"sector":1}]}
+
+/***/ }),
+/* 8 */
+/***/ (function(module, exports) {
+
+module.exports = {"sectors":[{"id":0,"floor":0,"ceiling":6,"vertices":[{"x":2,"y":5,"neighbour":-1},{"x":5,"y":2,"neighbour":-1},{"x":15,"y":2,"neighbour":-1},{"x":18,"y":5,"neighbour":1},{"x":18,"y":15,"neighbour":-1},{"x":15,"y":18,"neighbour":-1},{"x":5,"y":18,"neighbour":-1},{"x":2,"y":15,"neighbour":-1}]},{"id":1,"floor":1,"ceiling":5,"vertices":[{"x":18,"y":5,"neighbour":-1},{"x":30,"y":5,"neighbour":2},{"x":30,"y":15,"neighbour":-1},{"x":18,"y":15,"neighbour":0}]},{"id":2,"floor":0,"ceiling":6,"vertices":[{"x":30,"y":5,"neighbour":-1},{"x":33,"y":2,"neighbour":-1},{"x":43,"y":2,"neighbour":-1},{"x":46,"y":5,"neighbour":-1},{"x":46,"y":15,"neighbour":-1},{"x":43,"y":18,"neighbour":4},{"x":33,"y":18,"neighbour":3},{"x":30,"y":15,"neighbour":1}]},{"id":3,"floor":0,"ceiling":6,"vertices":[{"x":30,"y":15,"neighbour":2},{"x":33,"y":18,"neighbour":-1},{"x":26,"y":24,"neighbour":-1},{"x":23,"y":21,"neighbour":-1}]},{"id":4,"floor":0,"ceiling":6,"vertices":[{"x":43,"y":18,"neighbour":-1},{"x":40,"y":20,"neighbour":5},{"x":36,"y":20,"neighbour":-1},{"x":33,"y":18,"neighbour":2}]},{"id":5,"floor":1,"ceiling":11,"vertices":[{"x":40,"y":20,"neighbour":-1},{"x":40,"y":22,"neighbour":6},{"x":36,"y":22,"neighbour":-1},{"x":36,"y":20,"neighbour":4}]},{"id":6,"floor":2,"ceiling":11,"vertices":[{"x":40,"y":22,"neighbour":-1},{"x":40,"y":24,"neighbour":7},{"x":36,"y":24,"neighbour":-1},{"x":36,"y":22,"neighbour":5}]},{"id":7,"floor":3,"ceiling":11,"vertices":[{"x":40,"y":24,"neighbour":-1},{"x":40,"y":26,"neighbour":8},{"x":36,"y":26,"neighbour":-1},{"x":36,"y":24,"neighbour":6}]},{"id":8,"floor":4,"ceiling":11,"vertices":[{"x":40,"y":26,"neighbour":-1},{"x":40,"y":28,"neighbour":9},{"x":36,"y":28,"neighbour":-1},{"x":36,"y":26,"neighbour":7}]},{"id":9,"floor":5,"ceiling":11,"vertices":[{"x":40,"y":28,"neighbour":-1},{"x":44,"y":28,"neighbour":-1},{"x":44,"y":39,"neighbour":-1},{"x":32,"y":39,"neighbour":-1},{"x":32,"y":28,"neighbour":-1},{"x":36,"y":28,"neighbour":8}]}],"enemies":[]}
+
+/***/ }),
+/* 9 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _softwareRenderer = __webpack_require__(1);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -308,11 +520,13 @@ var Player = function (_GameObject) {
 
         _this.world = world;
         _this.speed = 0;
-        _this.moveSpeed = 50;
-        _this.rotationSpeed = 90;
+        _this.moveSpeed = 5;
+        _this.rotationSpeed = 130;
         _this.direction = 0;
+        _this.friction = 0.97;
         _this.controls = controls;
         _this.bindControls();
+        _this.moving = 0;
         return _this;
     }
 
@@ -325,10 +539,10 @@ var Player = function (_GameObject) {
                 event.preventDefault();
                 switch (event.key) {
                     case _this2.controls.forward:
-                        _this2.speed = 1;
+                        _this2.moving = 1;
                         break;
                     case _this2.controls.backward:
-                        _this2.speed = -1;
+                        _this2.moving = -1;
                         break;
                     case _this2.controls.left:
                         _this2.direction = -1;
@@ -342,10 +556,10 @@ var Player = function (_GameObject) {
             document.onkeyup = function (event) {
                 switch (event.key) {
                     case _this2.controls.forward:
-                        _this2.speed = 0;
+                        _this2.moving = 0;
                         break;
                     case _this2.controls.backward:
-                        _this2.speed = 0;
+                        _this2.moving = 0;
                         break;
                     case _this2.controls.left:
                         _this2.direction = 0;
@@ -359,6 +573,18 @@ var Player = function (_GameObject) {
     }, {
         key: 'update',
         value: function update() {
+            if (this.moving == 1) {
+                if (this.speed < this.moveSpeed) {
+                    this.speed++;
+                }
+            } else if (this.moving == -1) {
+                if (this.speed > -this.moveSpeed) {
+                    this.speed--;
+                }
+            } else {
+                this.speed *= this.friction;
+            }
+
             if (this.sector) {
                 this.z = this.sector.floor;
             }
@@ -370,7 +596,8 @@ var Player = function (_GameObject) {
                 rotation = rotation + 360;
             }
 
-            var moveStep = this.speed * this.moveSpeed;
+            // const moveStep = this.moving * this.moveSpeed;
+            var moveStep = this.speed;
             var radians = (0, _softwareRenderer.toRadians)(rotation);
             var moveX = Math.cos(radians) * moveStep;
             var moveY = Math.sin(radians) * moveStep;
@@ -389,9 +616,7 @@ var Player = function (_GameObject) {
 exports.default = Player;
 
 /***/ }),
-/* 4 */,
-/* 5 */,
-/* 6 */
+/* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -400,82 +625,74 @@ exports.default = Player;
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-
-var _Enemy = __webpack_require__(17);
-
-var _Enemy2 = _interopRequireDefault(_Enemy);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var levels = {
-    demo: __webpack_require__(7),
-    demo2: __webpack_require__(18)
+var toRadians = exports.toRadians = function toRadians(degrees) {
+    return degrees * Math.PI / 180;
 };
 
-function LevelException(message) {
-    this.message = message;
-    this.name = 'LevelException';
-}
-
-var loadLevel = function loadLevel(name) {
-    if (levels[name]) {
-        var level = levels[name];
-        level.enemies = level.enemies.map(function (enemy) {
-            return new _Enemy2.default({ x: enemy.x, y: enemy.y, sector: enemy.sector });
-        });
-        return level;
-    } else {
-        throw new LevelException('Invalid Level Name');
-    }
+var toDegrees = exports.toDegrees = function toDegrees(radians) {
+    return radians * 180 / Math.PI;
 };
 
-exports.default = loadLevel;
-
 /***/ }),
-/* 7 */
-/***/ (function(module, exports) {
-
-module.exports = {"sectors":[{"id":0,"floor":0,"ceiling":60,"vertices":[{"x":20,"y":50,"neighbour":-1},{"x":50,"y":20,"neighbour":-1},{"x":150,"y":20,"neighbour":-1},{"x":180,"y":50,"neighbour":1},{"x":180,"y":150,"neighbour":-1},{"x":150,"y":180,"neighbour":-1},{"x":50,"y":180,"neighbour":-1},{"x":20,"y":150,"neighbour":-1}]},{"id":1,"floor":10,"ceiling":50,"vertices":[{"x":180,"y":50,"neighbour":-1},{"x":300,"y":50,"neighbour":2},{"x":300,"y":150,"neighbour":-1},{"x":180,"y":150,"neighbour":0}]},{"id":2,"floor":0,"ceiling":60,"vertices":[{"x":300,"y":50,"neighbour":-1},{"x":330,"y":20,"neighbour":-1},{"x":430,"y":20,"neighbour":-1},{"x":460,"y":50,"neighbour":-1},{"x":460,"y":150,"neighbour":-1},{"x":430,"y":180,"neighbour":4},{"x":330,"y":180,"neighbour":3},{"x":300,"y":150,"neighbour":1}]},{"id":3,"floor":0,"ceiling":60,"vertices":[{"x":300,"y":150,"neighbour":2},{"x":330,"y":180,"neighbour":-1},{"x":260,"y":240,"neighbour":-1},{"x":230,"y":210,"neighbour":-1}]},{"id":4,"floor":0,"ceiling":60,"vertices":[{"x":430,"y":180,"neighbour":-1},{"x":400,"y":200,"neighbour":5},{"x":360,"y":200,"neighbour":-1},{"x":330,"y":180,"neighbour":2}]},{"id":5,"floor":10,"ceiling":110,"vertices":[{"x":400,"y":200,"neighbour":-1},{"x":400,"y":220,"neighbour":6},{"x":360,"y":220,"neighbour":-1},{"x":360,"y":200,"neighbour":4}]},{"id":6,"floor":20,"ceiling":110,"vertices":[{"x":400,"y":220,"neighbour":-1},{"x":400,"y":240,"neighbour":7},{"x":360,"y":240,"neighbour":-1},{"x":360,"y":220,"neighbour":5}]},{"id":7,"floor":30,"ceiling":110,"vertices":[{"x":400,"y":240,"neighbour":-1},{"x":400,"y":260,"neighbour":8},{"x":360,"y":260,"neighbour":-1},{"x":360,"y":240,"neighbour":6}]},{"id":8,"floor":40,"ceiling":110,"vertices":[{"x":400,"y":260,"neighbour":-1},{"x":400,"y":280,"neighbour":9},{"x":360,"y":280,"neighbour":-1},{"x":360,"y":260,"neighbour":7}]},{"id":9,"floor":50,"ceiling":110,"vertices":[{"x":400,"y":280,"neighbour":-1},{"x":440,"y":280,"neighbour":-1},{"x":440,"y":390,"neighbour":-1},{"x":320,"y":390,"neighbour":-1},{"x":320,"y":280,"neighbour":-1},{"x":360,"y":280,"neighbour":8}]}],"enemies":[{"x":250,"y":100,"sector":1}]}
-
-/***/ }),
-/* 8 */
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+    value: true
 });
-exports.GameObject = exports.Camera = undefined;
+var cross = function cross(x0, y0, x1, y1) {
+    return x0 * y1 - x1 * y0;
+};
 
-var _utils = __webpack_require__(10);
+var overlap = function overlap(a0, a1, b0, b1) {
+    return Math.min(a0, a1) <= Math.max(b0, b1) && Math.min(b0, b1) <= Math.max(a0, a1);
+};
 
-Object.keys(_utils).forEach(function (key) {
-  if (key === "default" || key === "__esModule") return;
-  Object.defineProperty(exports, key, {
-    enumerable: true,
-    get: function get() {
-      return _utils[key];
-    }
-  });
-});
+var intersectBox = exports.intersectBox = function intersectBox(x0, y0, x1, y1, x2, y2, x3, y3) {
+    return overlap(x0, x1, x2, x3) && overlap(y0, y1, y2, y3);
+};
 
-var _Camera = __webpack_require__(9);
-
-var _Camera2 = _interopRequireDefault(_Camera);
-
-var _GameObject = __webpack_require__(15);
-
-var _GameObject2 = _interopRequireDefault(_GameObject);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-exports.Camera = _Camera2.default;
-exports.GameObject = _GameObject2.default;
+var pointSide = exports.pointSide = function pointSide(px, py, x0, y0, x1, y1) {
+    return Math.sign(cross(x1 - x0, y1 - y0, px - x0, py - y0));
+};
 
 /***/ }),
-/* 9 */
+/* 12 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+var deltaTime = exports.deltaTime = 0;
+var lastUpdate = exports.lastUpdate = Date.now();
+var updateTime = exports.updateTime = function updateTime() {
+    var currentTime = Date.now();
+    exports.deltaTime = deltaTime = (currentTime - lastUpdate) / 1000.0; // Convert delta time from milliseconds to seconds
+    exports.lastUpdate = lastUpdate = currentTime;
+};
+
+/***/ }),
+/* 13 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+var clamp = exports.clamp = function clamp(val, min, max) {
+    return Math.min(Math.max(min, val), max);
+};
+
+/***/ }),
+/* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -487,9 +704,9 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _utils = __webpack_require__(10);
+var _utils = __webpack_require__(0);
 
-var _GameObject = __webpack_require__(15);
+var _GameObject = __webpack_require__(2);
 
 var _GameObject2 = _interopRequireDefault(_GameObject);
 
@@ -540,14 +757,16 @@ var Camera = function () {
         this.parent = parent;
         this.world = world;
         this.rotation = rotation;
-        this.hfov = 1.0 * 0.73 * this.height / this.width;
-        this.vfov = 1.0 * .2;
+        // this.hfov = (1.0 * 0.73 * this.height / this.width); // This should be 0.6 (60)
+        // this.vfov = (1.0 * .2); // This should be hfov / aspect ratio. (3/4 = .75 = 0.6 * .75 = 0.45)
+        this.hfov = 0.6;
+        this.vfov = 0.45;
         this.context = element.getContext('2d');
         this.lastPosition = {
             x: parent.x,
             y: parent.y
         };
-        this.sector = this.getActiveSector();
+        this.sector = this.getActiveSector(); // This shouldn't be handled by the camera. This should be handled by the game code which would check on every frame which objects have changed sectors.
         this.cached = {
             ytop: [],
             ybottom: []
@@ -636,6 +855,7 @@ var Camera = function () {
                         var vy2 = i >= sector.vertices.length - 1 ? sector.vertices[0].y : sector.vertices[i + 1].y;
 
                         if ((0, _utils.intersectBox)(this.currentPosition.x, this.currentPosition.y, this.lastPosition.x, this.lastPosition.y, vx1, vy1, vx2, vy2)) {
+                            // console.log(pointSide(this.currentPosition.x, this.currentPosition.y, vx1, vy1, vx2, vy2));
                             if ((0, _utils.pointSide)(this.currentPosition.x, this.currentPosition.y, vx1, vy1, vx2, vy2) > 0) {
                                 this.sector = sector.id;
                                 this.parent.sector = sector;
@@ -730,7 +950,10 @@ var Camera = function () {
                 var beginX = parseInt(Math.max(x1, sx1));
                 var endX = parseInt(Math.min(x2, sx2));
 
-                var zInt = (0, _utils.scalerInit)(x1, beginX, x2, tz1 / 4, tz2 / 4);
+                var zInt = (0, _utils.scalerInit)(x1, beginX, x2, tz1 * 4, tz2 * 4);
+
+                // If camera is in between sectors, it will only render parts of the screen
+                // Render out transformed points to an above view to see what's happening
 
                 // Is the wall on screen
                 if (endX < 0 || beginX > this.width) {
@@ -739,6 +962,8 @@ var Camera = function () {
 
                 var nytop = [];
                 var nybottom = [];
+
+                // console.log(beginX, endX, 'positions + ' + sector.id, this.sector);
 
                 for (var x = beginX; x < endX; x++) {
                     /* Acquire the Y coordinates for our floor & ceiling for this X coordinate */
@@ -762,7 +987,7 @@ var Camera = function () {
 
                     if (neighbour < 0) {
                         var r = parseInt(255 - z);
-                        this.vline(x, cya + 1, cyb + 1, x == beginX || x == endX ? 'rgb(' + (r - 25) + ', ' + (r - 25) + ', ' + (r - 25) + ')' : 'rgb(' + r + ', ' + r + ', ' + r + ')');
+                        this.vline(x, cya + 1, cyb + 1, x == beginX || x == endX ? 'rgb(' + r + ', ' + r + ', ' + r + ')' : 'rgb(' + r + ', ' + r + ', ' + r + ')');
                     } else {
                         /* Aquire the Y coordinates for our neighbour's floor and ceiling for this X coordinate */
                         var nya = (x - x1) * (ny2a - ny1a) / (x2 - x1) + ny1a;
@@ -774,7 +999,7 @@ var Camera = function () {
                         // If our ceiling is higher than the neighours ceiling, render it
                         if (cnya > cya) {
                             var ceilingColor = parseInt(255 - z);
-                            this.vline(x, cya, cnya + 1, x == beginX || x == endX ? 'rgb(' + (ceilingColor - 25) + ', ' + (ceilingColor - 25) + ', ' + (ceilingColor - 25) + ')' : 'rgb(' + ceilingColor + ', ' + ceilingColor + ', ' + ceilingColor + ')');
+                            this.vline(x, cya, cnya + 1, x == beginX || x == endX ? 'rgb(' + ceilingColor + ', ' + ceilingColor + ', ' + ceilingColor + ')' : 'rgb(' + ceilingColor + ', ' + ceilingColor + ', ' + ceilingColor + ')');
                             nytop[x] = parseInt((0, _utils.clamp)(cnya, nytop[x], this.height));
                         } else {
                             nytop[x] = parseInt((0, _utils.clamp)(cya, nytop[x], this.height));
@@ -787,7 +1012,7 @@ var Camera = function () {
                                 g: parseInt(152 - z),
                                 b: parseInt(219 - z)
                             };
-                            this.vline(x, cnyb - 1, cyb, x == beginX || x == endX ? 'rgb(' + (floorColor.r - 25) + ', ' + (floorColor.g - 25) + ', ' + (floorColor.b - 25) + ')' : 'rgb(' + floorColor.r + ', ' + floorColor.g + ', ' + floorColor.b + ')');
+                            this.vline(x, cnyb - 1, cyb, x == beginX || x == endX ? 'rgb(' + floorColor.r + ', ' + floorColor.g + ', ' + floorColor.b + ')' : 'rgb(' + floorColor.r + ', ' + floorColor.g + ', ' + floorColor.b + ')');
                             nybottom[x] = parseInt((0, _utils.clamp)(cnyb, 0, ybottom[x]));
                         } else {
                             nybottom[x] = parseInt((0, _utils.clamp)(cyb, 0, ybottom[x]));
@@ -809,10 +1034,6 @@ var Camera = function () {
     }, {
         key: 'renderSprites',
         value: function renderSprites() {
-            // console.log(this.cached, 'cached');
-            // console.log(this.world.enemies);
-
-
             var _iteratorNormalCompletion3 = true;
             var _didIteratorError3 = false;
             var _iteratorError3 = undefined;
@@ -969,163 +1190,6 @@ var Camera = function () {
 exports.default = Camera;
 
 /***/ }),
-/* 10 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _degreeConversion = __webpack_require__(11);
-
-Object.defineProperty(exports, 'toRadians', {
-    enumerable: true,
-    get: function get() {
-        return _degreeConversion.toRadians;
-    }
-});
-Object.defineProperty(exports, 'toDegrees', {
-    enumerable: true,
-    get: function get() {
-        return _degreeConversion.toDegrees;
-    }
-});
-
-var _intersect = __webpack_require__(12);
-
-Object.defineProperty(exports, 'intersect', {
-    enumerable: true,
-    get: function get() {
-        return _intersect.intersect;
-    }
-});
-Object.defineProperty(exports, 'intersectBox', {
-    enumerable: true,
-    get: function get() {
-        return _intersect.intersectBox;
-    }
-});
-Object.defineProperty(exports, 'pointSide', {
-    enumerable: true,
-    get: function get() {
-        return _intersect.pointSide;
-    }
-});
-
-var _time = __webpack_require__(13);
-
-Object.defineProperty(exports, 'deltaTime', {
-    enumerable: true,
-    get: function get() {
-        return _time.deltaTime;
-    }
-});
-Object.defineProperty(exports, 'lastUpdate', {
-    enumerable: true,
-    get: function get() {
-        return _time.lastUpdate;
-    }
-});
-Object.defineProperty(exports, 'updateTime', {
-    enumerable: true,
-    get: function get() {
-        return _time.updateTime;
-    }
-});
-
-var _math = __webpack_require__(16);
-
-Object.defineProperty(exports, 'clamp', {
-    enumerable: true,
-    get: function get() {
-        return _math.clamp;
-    }
-});
-var scalerInit = exports.scalerInit = function scalerInit(a, b, c, d, f) {
-    return {
-        result: d + (b - 1 - a) * (f - d) / (c - a),
-        bob: f < d ^ c < a ? -1 : 1,
-        fd: Math.abs(f - d),
-        ca: Math.abs(c - a),
-        cache: (b - 1 - a) * Math.abs(f - d) % Math.abs(c - a)
-    };
-};
-
-var scalerNext = exports.scalerNext = function scalerNext(scaler) {
-    for (scaler.cache += scaler.fd; scaler.cache >= scaler.ca; scaler.cache -= scaler.ca) {
-        scaler.result += scaler.bob;
-    }
-
-    return scaler.result;
-};
-
-/***/ }),
-/* 11 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-var toRadians = exports.toRadians = function toRadians(degrees) {
-    return degrees * Math.PI / 180;
-};
-
-var toDegrees = exports.toDegrees = function toDegrees(radians) {
-    return radians * 180 / Math.PI;
-};
-
-/***/ }),
-/* 12 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-var cross = function cross(x0, y0, x1, y1) {
-    return x0 * y1 - x1 * y0;
-};
-
-var overlap = function overlap(a0, a1, b0, b1) {
-    return Math.min(a0, a1) <= Math.max(b0, b1) && Math.min(b0, b1) <= Math.max(a0, a1);
-};
-
-var intersectBox = exports.intersectBox = function intersectBox(x0, y0, x1, y1, x2, y2, x3, y3) {
-    return overlap(x0, x1, x2, x3) && overlap(y0, y1, y2, y3);
-};
-
-var pointSide = exports.pointSide = function pointSide(px, py, x0, y0, x1, y1) {
-    return Math.sign(cross(x1 - x0, y1 - y0, px - x0, py - y0));
-};
-
-/***/ }),
-/* 13 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-var deltaTime = exports.deltaTime = 0;
-var lastUpdate = exports.lastUpdate = Date.now();
-var updateTime = exports.updateTime = function updateTime() {
-    var currentTime = Date.now();
-    exports.deltaTime = deltaTime = (currentTime - lastUpdate) / 1000.0; // Convert delta time from milliseconds to seconds
-    exports.lastUpdate = lastUpdate = currentTime;
-};
-
-/***/ }),
-/* 14 */,
 /* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -1136,31 +1200,77 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _utils = __webpack_require__(0);
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var id = 0;
+var Scene = function () {
+    function Scene() {
+        var world = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
 
-var GameObject = function GameObject(_ref) {
-    var _ref$x = _ref.x,
-        x = _ref$x === undefined ? 0 : _ref$x,
-        _ref$y = _ref.y,
-        y = _ref$y === undefined ? 0 : _ref$y,
-        _ref$z = _ref.z,
-        z = _ref$z === undefined ? 0 : _ref$z,
-        _ref$rotation = _ref.rotation,
-        rotation = _ref$rotation === undefined ? 0 : _ref$rotation;
+        _classCallCheck(this, Scene);
 
-    _classCallCheck(this, GameObject);
+        this.objects = [];
+        this.world = world;
+    }
 
-    this.id = id++;
-    this.x = x;
-    this.y = y;
-    this.z = z;
-    this.rotation = rotation;
-    this.sector = null;
-};
+    _createClass(Scene, [{
+        key: 'addWorld',
+        value: function addWorld(world) {
+            this.world = world;
+        }
+    }, {
+        key: 'add',
+        value: function add(object) {
+            var _this = this;
 
-exports.default = GameObject;
+            object.onMove = function (prevState, currentState) {
+                return _this.objectMoved(prevState, currentState);
+            };
+            this.objects.push(object);
+        }
+    }, {
+        key: 'objectMoved',
+        value: function objectMoved(prevState, currentState) {
+            // console.log('moved', prevState, currentState);
+        }
+    }, {
+        key: 'update',
+        value: function update() {
+            (0, _utils.updateTime)();
+            var _iteratorNormalCompletion = true;
+            var _didIteratorError = false;
+            var _iteratorError = undefined;
+
+            try {
+                for (var _iterator = this.objects[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                    var object = _step.value;
+
+                    object.queueUpdate();
+                }
+            } catch (err) {
+                _didIteratorError = true;
+                _iteratorError = err;
+            } finally {
+                try {
+                    if (!_iteratorNormalCompletion && _iterator.return) {
+                        _iterator.return();
+                    }
+                } finally {
+                    if (_didIteratorError) {
+                        throw _iteratorError;
+                    }
+                }
+            }
+        }
+    }]);
+
+    return Scene;
+}();
+
+exports.default = Scene;
 
 /***/ }),
 /* 16 */
@@ -1172,48 +1282,116 @@ exports.default = GameObject;
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-var clamp = exports.clamp = function clamp(val, min, max) {
-    return Math.min(Math.max(min, val), max);
-};
 
-/***/ }),
-/* 17 */
-/***/ (function(module, exports, __webpack_require__) {
+var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
 
-"use strict";
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
+var _softwareRenderer = __webpack_require__(1);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var Enemy = function Enemy(_ref) {
-    var _ref$x = _ref.x,
-        x = _ref$x === undefined ? 0 : _ref$x,
-        _ref$y = _ref.y,
-        y = _ref$y === undefined ? 0 : _ref$y,
-        _ref$z = _ref.z,
-        z = _ref$z === undefined ? 0 : _ref$z,
-        _ref$sector = _ref.sector,
-        sector = _ref$sector === undefined ? -1 : _ref$sector;
+var Map = function () {
+    function Map() {
+        var element = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+        var playerSize = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 6;
 
-    _classCallCheck(this, Enemy);
+        _classCallCheck(this, Map);
 
-    this.x = x;
-    this.y = y;
-    this.z = z;
-    this.sector = sector;
-};
+        this.element = element;
+        this.context = element.getContext('2d');
+        this.playerSize = playerSize;
+        this.mapSize = 10;
+    }
 
-exports.default = Enemy;
+    _createClass(Map, [{
+        key: 'resize',
+        value: function resize(vertex) {
+            return vertex * this.mapSize;
+        }
+    }, {
+        key: 'render',
+        value: function render(level, player) {
+            this.context.clearRect(0, 0, this.element.width, this.element.height);
+            this.context.save();
+            var _iteratorNormalCompletion = true;
+            var _didIteratorError = false;
+            var _iteratorError = undefined;
 
-/***/ }),
-/* 18 */
-/***/ (function(module, exports) {
+            try {
+                for (var _iterator = level.sectors[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                    var sector = _step.value;
 
-module.exports = {"sectors":[{"id":0,"floor":0,"ceiling":6,"vertices":[{"x":2,"y":5,"neighbour":-1},{"x":5,"y":2,"neighbour":-1},{"x":15,"y":2,"neighbour":-1},{"x":18,"y":5,"neighbour":1},{"x":18,"y":15,"neighbour":-1},{"x":15,"y":18,"neighbour":-1},{"x":50,"y":18,"neighbour":-1},{"x":2,"y":15,"neighbour":-1}]},{"id":1,"floor":1,"ceiling":5,"vertices":[{"x":18,"y":5,"neighbour":-1},{"x":30,"y":5,"neighbour":2},{"x":30,"y":15,"neighbour":-1},{"x":18,"y":15,"neighbour":0}]},{"id":2,"floor":0,"ceiling":6,"vertices":[{"x":30,"y":5,"neighbour":-1},{"x":33,"y":2,"neighbour":-1},{"x":43,"y":2,"neighbour":-1},{"x":46,"y":5,"neighbour":-1},{"x":46,"y":15,"neighbour":-1},{"x":43,"y":18,"neighbour":4},{"x":33,"y":18,"neighbour":3},{"x":30,"y":15,"neighbour":1}]},{"id":3,"floor":0,"ceiling":6,"vertices":[{"x":30,"y":15,"neighbour":2},{"x":33,"y":18,"neighbour":-1},{"x":26,"y":24,"neighbour":-1},{"x":23,"y":21,"neighbour":-1}]},{"id":4,"floor":0,"ceiling":6,"vertices":[{"x":43,"y":18,"neighbour":-1},{"x":40,"y":20,"neighbour":5},{"x":36,"y":20,"neighbour":-1},{"x":33,"y":18,"neighbour":2}]},{"id":5,"floor":1,"ceiling":11,"vertices":[{"x":40,"y":20,"neighbour":-1},{"x":40,"y":22,"neighbour":6},{"x":36,"y":22,"neighbour":-1},{"x":36,"y":20,"neighbour":4}]},{"id":6,"floor":2,"ceiling":11,"vertices":[{"x":40,"y":22,"neighbour":-1},{"x":40,"y":24,"neighbour":7},{"x":36,"y":24,"neighbour":-1},{"x":36,"y":22,"neighbour":5}]},{"id":7,"floor":3,"ceiling":11,"vertices":[{"x":40,"y":24,"neighbour":-1},{"x":40,"y":26,"neighbour":8},{"x":36,"y":26,"neighbour":-1},{"x":36,"y":24,"neighbour":6}]},{"id":8,"floor":4,"ceiling":11,"vertices":[{"x":40,"y":26,"neighbour":-1},{"x":40,"y":28,"neighbour":9},{"x":36,"y":28,"neighbour":-1},{"x":36,"y":26,"neighbour":7}]},{"id":9,"floor":5,"ceiling":11,"vertices":[{"x":40,"y":28,"neighbour":-1},{"x":44,"y":28,"neighbour":-1},{"x":44,"y":39,"neighbour":-1},{"x":32,"y":39,"neighbour":-1},{"x":32,"y":28,"neighbour":-1},{"x":36,"y":28,"neighbour":8}]}],"enemies":[]}
+                    this.context.beginPath();
+                    var _iteratorNormalCompletion2 = true;
+                    var _didIteratorError2 = false;
+                    var _iteratorError2 = undefined;
+
+                    try {
+                        for (var _iterator2 = sector.vertices.entries()[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+                            var _step2$value = _slicedToArray(_step2.value, 2),
+                                index = _step2$value[0],
+                                vertex = _step2$value[1];
+
+                            if (index === 0) {
+                                this.context.moveTo(this.resize(vertex.x), this.resize(vertex.y));
+                            } else {
+                                this.context.strokeStyle = 'black';
+                                this.context.lineTo(this.resize(vertex.x), this.resize(vertex.y));
+                            }
+                        }
+                    } catch (err) {
+                        _didIteratorError2 = true;
+                        _iteratorError2 = err;
+                    } finally {
+                        try {
+                            if (!_iteratorNormalCompletion2 && _iterator2.return) {
+                                _iterator2.return();
+                            }
+                        } finally {
+                            if (_didIteratorError2) {
+                                throw _iteratorError2;
+                            }
+                        }
+                    }
+
+                    this.context.lineTo(this.resize(sector.vertices[0].x), this.resize(sector.vertices[0].y));
+                    this.context.stroke();
+                    this.context.closePath();
+                }
+            } catch (err) {
+                _didIteratorError = true;
+                _iteratorError = err;
+            } finally {
+                try {
+                    if (!_iteratorNormalCompletion && _iterator.return) {
+                        _iterator.return();
+                    }
+                } finally {
+                    if (_didIteratorError) {
+                        throw _iteratorError;
+                    }
+                }
+            }
+
+            this.context.restore();
+
+            this.context.save();
+            this.context.beginPath();
+            this.context.translate(this.resize(player.x), this.resize(player.y));
+            this.context.rotate((0, _softwareRenderer.toRadians)(player.rotation));
+            this.context.fillStyle = 'red';
+            this.context.fillRect(0, -1, 10, 2);
+            this.context.fillRect(-this.playerSize / 2, -this.playerSize / 2, this.playerSize, this.playerSize);
+            this.context.closePath();
+            this.context.restore();
+        }
+    }]);
+
+    return Map;
+}();
+
+exports.default = Map;
 
 /***/ })
 /******/ ]);

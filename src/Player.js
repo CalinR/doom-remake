@@ -5,11 +5,13 @@ export default class Player extends GameObject {
         super({ x, y, z, rotation });
         this.world = world;
         this.speed = 0;
-        this.moveSpeed = 50;
-        this.rotationSpeed = 90;
+        this.moveSpeed = 5;
+        this.rotationSpeed = 130;
         this.direction = 0;
+        this.friction = 0.97;
         this.controls = controls;
         this.bindControls();
+        this.moving = 0;
     }
 
     bindControls(){
@@ -17,10 +19,10 @@ export default class Player extends GameObject {
             event.preventDefault();
             switch(event.key){
                 case this.controls.forward:
-                    this.speed = 1;
+                    this.moving = 1;
                     break;
                 case this.controls.backward:
-                    this.speed = -1;
+                    this.moving = -1;
                     break;
                 case this.controls.left:
                     this.direction = -1;
@@ -34,10 +36,10 @@ export default class Player extends GameObject {
         document.onkeyup = (event) => {
             switch(event.key){
                 case this.controls.forward:
-                    this.speed = 0;
+                    this.moving = 0;
                     break;
                 case this.controls.backward:
-                    this.speed = 0;
+                    this.moving = 0;
                     break;
                 case this.controls.left:
                     this.direction = 0;
@@ -50,6 +52,20 @@ export default class Player extends GameObject {
     }
 
     update(){
+        if(this.moving == 1){
+            if(this.speed < this.moveSpeed){
+                this.speed ++;
+            }
+        }
+        else if(this.moving == -1){
+            if(this.speed > -this.moveSpeed){
+                this.speed --;
+            }
+        }
+        else {
+            this.speed *= this.friction;
+        }
+
         if(this.sector){
             this.z = this.sector.floor;
         }
@@ -62,7 +78,8 @@ export default class Player extends GameObject {
             rotation = rotation + 360;
         }
 
-        const moveStep = (this.speed * this.moveSpeed);
+        // const moveStep = this.moving * this.moveSpeed;
+        const moveStep = this.speed;
         const radians = toRadians(rotation);
         const moveX = Math.cos(radians) * moveStep;
         const moveY = Math.sin(radians) * moveStep;
