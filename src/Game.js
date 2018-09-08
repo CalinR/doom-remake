@@ -11,13 +11,14 @@ export default class Game {
         this.level = loadLevel('demo2');
         // use the following coordinates to test bug
         // 37.66, 23.99
-        // this.player = new Player({ x: 37.66, y: 23.99, z: 0, rotation: 89, controls: { forward: 'ArrowUp', backward: 'ArrowDown', left: 'ArrowLeft', right: 'ArrowRight' }});
-        this.player = new Player({ x: 15, y: 10, z: 0, rotation: 0, controls: { forward: 'ArrowUp', backward: 'ArrowDown', left: 'ArrowLeft', right: 'ArrowRight' }});
+        this.player = new Player({ x: 37.66, y: 23.99, z: 0, rotation: 89, controls: { forward: 'ArrowUp', backward: 'ArrowDown', left: 'ArrowLeft', right: 'ArrowRight' }});
+        // this.player = new Player({ x: 15, y: 10, z: 0, rotation: 0, controls: { forward: 'ArrowUp', backward: 'ArrowDown', left: 'ArrowLeft', right: 'ArrowRight' }});
         this.camera = new Camera({ z: 3, parent: this.player, world: this.level, element: document.getElementById('camera') }); // Rework camera logic
         this.scene.add(this.player);
         this.scene.addWorld(this.level);
         this.updateLoop();
         window.player = this.player;
+        window.camera = this.camera;
     }
 
     updateLoop(){

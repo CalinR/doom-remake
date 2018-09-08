@@ -74,7 +74,7 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _degreeConversion = __webpack_require__(10);
+var _degreeConversion = __webpack_require__(9);
 
 Object.defineProperty(exports, 'toRadians', {
     enumerable: true,
@@ -89,7 +89,7 @@ Object.defineProperty(exports, 'toDegrees', {
     }
 });
 
-var _intersect = __webpack_require__(11);
+var _intersect = __webpack_require__(10);
 
 Object.defineProperty(exports, 'intersect', {
     enumerable: true,
@@ -110,7 +110,7 @@ Object.defineProperty(exports, 'pointSide', {
     }
 });
 
-var _time = __webpack_require__(12);
+var _time = __webpack_require__(11);
 
 Object.defineProperty(exports, 'deltaTime', {
     enumerable: true,
@@ -131,7 +131,7 @@ Object.defineProperty(exports, 'updateTime', {
     }
 });
 
-var _math = __webpack_require__(13);
+var _math = __webpack_require__(12);
 
 Object.defineProperty(exports, 'clamp', {
     enumerable: true,
@@ -181,7 +181,7 @@ Object.keys(_utils).forEach(function (key) {
   });
 });
 
-var _Camera = __webpack_require__(14);
+var _Camera = __webpack_require__(13);
 
 var _Camera2 = _interopRequireDefault(_Camera);
 
@@ -189,7 +189,7 @@ var _GameObject = __webpack_require__(2);
 
 var _GameObject2 = _interopRequireDefault(_GameObject);
 
-var _Scene = __webpack_require__(15);
+var _Scene = __webpack_require__(14);
 
 var _Scene2 = _interopRequireDefault(_Scene);
 
@@ -239,6 +239,10 @@ var GameObject = function () {
             y: y,
             z: z,
             rotation: rotation,
+            velocity: {
+                x: 0,
+                y: 0
+            },
             sector: sector
         };
         this.onMove = null;
@@ -249,11 +253,13 @@ var GameObject = function () {
         value: function queueUpdate() {
             var oldState = Object.assign({}, this.state);
             this.update();
-            if (JSON.stringify(this.state) !== JSON.stringify(oldState)) {
+            if (this.velocity.x != 0 && this.velocity.y != 0) {
                 if (typeof this.onMove == 'function') {
-                    this.onMove(oldState, Object.assign({}, this.state));
+                    this.onMove(oldState, Object.assign({}, this.state), this);
                 }
             }
+            this.x += this.velocity.x;
+            this.y += this.velocity.y;
         }
     }, {
         key: 'update',
@@ -289,6 +295,14 @@ var GameObject = function () {
         },
         set: function set(rotation) {
             this.state.rotation = rotation;
+        }
+    }, {
+        key: 'velocity',
+        get: function get() {
+            return this.state.velocity;
+        },
+        set: function set(velocity) {
+            this.state.velocity = velocity;
         }
     }, {
         key: 'sector',
@@ -339,7 +353,7 @@ var _loadLevel2 = _interopRequireDefault(_loadLevel);
 
 var _softwareRenderer = __webpack_require__(1);
 
-var _Player = __webpack_require__(9);
+var _Player = __webpack_require__(15);
 
 var _Player2 = _interopRequireDefault(_Player);
 
@@ -360,13 +374,14 @@ var Game = function () {
         this.level = (0, _loadLevel2.default)('demo2');
         // use the following coordinates to test bug
         // 37.66, 23.99
-        // this.player = new Player({ x: 37.66, y: 23.99, z: 0, rotation: 89, controls: { forward: 'ArrowUp', backward: 'ArrowDown', left: 'ArrowLeft', right: 'ArrowRight' }});
-        this.player = new _Player2.default({ x: 15, y: 10, z: 0, rotation: 0, controls: { forward: 'ArrowUp', backward: 'ArrowDown', left: 'ArrowLeft', right: 'ArrowRight' } });
+        this.player = new _Player2.default({ x: 37.66, y: 23.99, z: 0, rotation: 89, controls: { forward: 'ArrowUp', backward: 'ArrowDown', left: 'ArrowLeft', right: 'ArrowRight' } });
+        // this.player = new Player({ x: 15, y: 10, z: 0, rotation: 0, controls: { forward: 'ArrowUp', backward: 'ArrowDown', left: 'ArrowLeft', right: 'ArrowRight' }});
         this.camera = new _softwareRenderer.Camera({ z: 3, parent: this.player, world: this.level, element: document.getElementById('camera') }); // Rework camera logic
         this.scene.add(this.player);
         this.scene.addWorld(this.level);
         this.updateLoop();
         window.player = this.player;
+        window.camera = this.camera;
     }
 
     _createClass(Game, [{
@@ -485,146 +500,6 @@ module.exports = {"sectors":[{"id":0,"floor":0,"ceiling":6,"vertices":[{"x":2,"y
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _softwareRenderer = __webpack_require__(1);
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var Player = function (_GameObject) {
-    _inherits(Player, _GameObject);
-
-    function Player() {
-        var _ref = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
-            _ref$x = _ref.x,
-            x = _ref$x === undefined ? 0 : _ref$x,
-            _ref$y = _ref.y,
-            y = _ref$y === undefined ? 0 : _ref$y,
-            _ref$z = _ref.z,
-            z = _ref$z === undefined ? 0 : _ref$z,
-            _ref$rotation = _ref.rotation,
-            rotation = _ref$rotation === undefined ? 0 : _ref$rotation,
-            _ref$controls = _ref.controls,
-            controls = _ref$controls === undefined ? { forward: 'w', backward: 's', left: 'a', right: 'd' } : _ref$controls,
-            _ref$world = _ref.world,
-            world = _ref$world === undefined ? null : _ref$world;
-
-        _classCallCheck(this, Player);
-
-        var _this = _possibleConstructorReturn(this, (Player.__proto__ || Object.getPrototypeOf(Player)).call(this, { x: x, y: y, z: z, rotation: rotation }));
-
-        _this.world = world;
-        _this.speed = 0;
-        _this.moveSpeed = 5;
-        _this.rotationSpeed = 130;
-        _this.direction = 0;
-        _this.friction = 0.97;
-        _this.controls = controls;
-        _this.bindControls();
-        _this.moving = 0;
-        return _this;
-    }
-
-    _createClass(Player, [{
-        key: 'bindControls',
-        value: function bindControls() {
-            var _this2 = this;
-
-            document.onkeydown = function (event) {
-                event.preventDefault();
-                switch (event.key) {
-                    case _this2.controls.forward:
-                        _this2.moving = 1;
-                        break;
-                    case _this2.controls.backward:
-                        _this2.moving = -1;
-                        break;
-                    case _this2.controls.left:
-                        _this2.direction = -1;
-                        break;
-                    case _this2.controls.right:
-                        _this2.direction = 1;
-                        break;
-                }
-            };
-
-            document.onkeyup = function (event) {
-                switch (event.key) {
-                    case _this2.controls.forward:
-                        _this2.moving = 0;
-                        break;
-                    case _this2.controls.backward:
-                        _this2.moving = 0;
-                        break;
-                    case _this2.controls.left:
-                        _this2.direction = 0;
-                        break;
-                    case _this2.controls.right:
-                        _this2.direction = 0;
-                        break;
-                }
-            };
-        }
-    }, {
-        key: 'update',
-        value: function update() {
-            if (this.moving == 1) {
-                if (this.speed < this.moveSpeed) {
-                    this.speed++;
-                }
-            } else if (this.moving == -1) {
-                if (this.speed > -this.moveSpeed) {
-                    this.speed--;
-                }
-            } else {
-                this.speed *= this.friction;
-            }
-
-            if (this.sector) {
-                this.z = this.sector.floor;
-            }
-            var rotation = this.rotation + this.direction * this.rotationSpeed * _softwareRenderer.deltaTime;
-
-            if (rotation > 360) {
-                rotation = 0;
-            } else if (rotation < 0) {
-                rotation = rotation + 360;
-            }
-
-            // const moveStep = this.moving * this.moveSpeed;
-            var moveStep = this.speed;
-            var radians = (0, _softwareRenderer.toRadians)(rotation);
-            var moveX = Math.cos(radians) * moveStep;
-            var moveY = Math.sin(radians) * moveStep;
-            var x = this.x + moveX * _softwareRenderer.deltaTime;
-            var y = this.y + moveY * _softwareRenderer.deltaTime;
-
-            this.x = x;
-            this.y = y;
-            this.rotation = rotation;
-        }
-    }]);
-
-    return Player;
-}(_softwareRenderer.GameObject);
-
-exports.default = Player;
-
-/***/ }),
-/* 10 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
 var toRadians = exports.toRadians = function toRadians(degrees) {
     return degrees * Math.PI / 180;
 };
@@ -634,7 +509,7 @@ var toDegrees = exports.toDegrees = function toDegrees(radians) {
 };
 
 /***/ }),
-/* 11 */
+/* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -659,8 +534,29 @@ var pointSide = exports.pointSide = function pointSide(px, py, x0, y0, x1, y1) {
     return Math.sign(cross(x1 - x0, y1 - y0, px - x0, py - y0));
 };
 
+var intersectLines = exports.intersectLines = function intersectLines(x0, y0, x1, y1, x2, y2, x3, y3) {
+    // Go here to see demonstation https://jsfiddle.net/qc705skx/4/
+    // Math from https://gamedev.stackexchange.com/questions/26004/how-to-detect-2d-line-on-line-collision
+
+    // const denominator = ((x1 - x0) * (y3 - y2)) - ((y1 - y0) * (x3 - x2));
+    // const numerator1  = ((y0 - y2) * (x3 - x2)) - ((x0 - x2) * (y3 - y2));
+    // const numerator2  = ((y0 - y2) * (x1 - x0)) - ((x0 - x2) * (y1 - y0));
+    var denominator = cross(x1 - x0, x3 - x2, y1 - y0, y3 - y2);
+    var numerator1 = cross(y0 - y2, y3 - y2, x0 - x2, x3 - x2);
+    var numerator2 = cross(y0 - y2, y1 - y0, x0 - x2, x1 - x0);
+
+    if (denominator == 0) {
+        return numerator1 == 0 && numerator2 == 0;
+    }
+
+    var r = numerator1 / denominator;
+    var s = numerator2 / denominator;
+
+    return r > 0 && r <= 1 && s >= 0 && s <= 1;
+};
+
 /***/ }),
-/* 12 */
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -678,7 +574,7 @@ var updateTime = exports.updateTime = function updateTime() {
 };
 
 /***/ }),
-/* 13 */
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -692,7 +588,7 @@ var clamp = exports.clamp = function clamp(val, min, max) {
 };
 
 /***/ }),
-/* 14 */
+/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -907,12 +803,12 @@ var Camera = function () {
 
                 /* Is any part of the wall behind the player */
                 if (tz1 <= 0) {
-                    tx1 = (0.01 - tz1) * (tx2 - tx1) / (tz2 - tz1) + tx1;
-                    tz1 = 0.01;
+                    tx1 = (0.0001 - tz1) * (tx2 - tx1) / (tz2 - tz1) + tx1;
+                    tz1 = 0.0001;
                 }
                 if (tz2 <= 0) {
-                    tx2 = (0.01 - tz2) * (tx1 - tx2) / (tz1 - tz2) + tx2;
-                    tz2 = 0.01;
+                    tx2 = (0.0001 - tz2) * (tx1 - tx2) / (tz1 - tz2) + tx2;
+                    tz2 = 0.0001;
                 }
 
                 /* Do perspective transformation */
@@ -952,9 +848,6 @@ var Camera = function () {
 
                 var zInt = (0, _utils.scalerInit)(x1, beginX, x2, tz1 * 4, tz2 * 4);
 
-                // If camera is in between sectors, it will only render parts of the screen
-                // Render out transformed points to an above view to see what's happening
-
                 // Is the wall on screen
                 if (endX < 0 || beginX > this.width) {
                     continue;
@@ -962,8 +855,6 @@ var Camera = function () {
 
                 var nytop = [];
                 var nybottom = [];
-
-                // console.log(beginX, endX, 'positions + ' + sector.id, this.sector);
 
                 for (var x = beginX; x < endX; x++) {
                     /* Acquire the Y coordinates for our floor & ceiling for this X coordinate */
@@ -1190,7 +1081,7 @@ var Camera = function () {
 exports.default = Camera;
 
 /***/ }),
-/* 15 */
+/* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1226,15 +1117,19 @@ var Scene = function () {
         value: function add(object) {
             var _this = this;
 
-            object.onMove = function (prevState, currentState) {
-                return _this.objectMoved(prevState, currentState);
+            object.onMove = function (prevState, currentState, object) {
+                return _this.objectMoved(prevState, currentState, object);
             };
             this.objects.push(object);
         }
     }, {
         key: 'objectMoved',
-        value: function objectMoved(prevState, currentState) {
-            // console.log('moved', prevState, currentState);
+        value: function objectMoved(prevState, currentState, object) {
+            // if(object.x < 10){
+            //     object.x = 10;
+            //     object.velocity.x = 0;
+            // }
+            // console.log('moved', prevState, currentState, object);
         }
     }, {
         key: 'update',
@@ -1271,6 +1166,157 @@ var Scene = function () {
 }();
 
 exports.default = Scene;
+
+/***/ }),
+/* 15 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _softwareRenderer = __webpack_require__(1);
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var Player = function (_GameObject) {
+    _inherits(Player, _GameObject);
+
+    function Player() {
+        var _ref = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
+            _ref$x = _ref.x,
+            x = _ref$x === undefined ? 0 : _ref$x,
+            _ref$y = _ref.y,
+            y = _ref$y === undefined ? 0 : _ref$y,
+            _ref$z = _ref.z,
+            z = _ref$z === undefined ? 0 : _ref$z,
+            _ref$rotation = _ref.rotation,
+            rotation = _ref$rotation === undefined ? 0 : _ref$rotation,
+            _ref$controls = _ref.controls,
+            controls = _ref$controls === undefined ? { forward: 'w', backward: 's', left: 'a', right: 'd' } : _ref$controls,
+            _ref$world = _ref.world,
+            world = _ref$world === undefined ? null : _ref$world;
+
+        _classCallCheck(this, Player);
+
+        var _this = _possibleConstructorReturn(this, (Player.__proto__ || Object.getPrototypeOf(Player)).call(this, { x: x, y: y, z: z, rotation: rotation }));
+
+        _this.world = world;
+        _this.speed = 0;
+        _this.moveSpeed = 5;
+        _this.rotationSpeed = 130;
+        _this.direction = 0;
+        _this.friction = 0.97;
+        _this.controls = controls;
+        _this.bindControls();
+        _this.moving = 0;
+        return _this;
+    }
+
+    _createClass(Player, [{
+        key: 'bindControls',
+        value: function bindControls() {
+            var _this2 = this;
+
+            document.onkeydown = function (event) {
+                event.preventDefault();
+                switch (event.key) {
+                    case _this2.controls.forward:
+                        _this2.moving = 1;
+                        break;
+                    case _this2.controls.backward:
+                        _this2.moving = -1;
+                        break;
+                    case _this2.controls.left:
+                        _this2.direction = -1;
+                        break;
+                    case _this2.controls.right:
+                        _this2.direction = 1;
+                        break;
+                }
+            };
+
+            document.onkeyup = function (event) {
+                switch (event.key) {
+                    case _this2.controls.forward:
+                        _this2.moving = 0;
+                        break;
+                    case _this2.controls.backward:
+                        _this2.moving = 0;
+                        break;
+                    case _this2.controls.left:
+                        _this2.direction = 0;
+                        break;
+                    case _this2.controls.right:
+                        _this2.direction = 0;
+                        break;
+                }
+            };
+        }
+    }, {
+        key: 'update',
+        value: function update() {
+            if (this.moving == 1) {
+                if (this.speed < this.moveSpeed) {
+                    this.speed++;
+                }
+            } else if (this.moving == -1) {
+                if (this.speed > -this.moveSpeed) {
+                    this.speed--;
+                }
+            } else if (this.speed != 0) {
+                this.speed *= this.friction;
+            }
+
+            this.speed = Number(parseFloat(this.speed).toFixed(2));
+
+            if (this.speed < 0.2 && this.speed > 0) {
+                this.speed = 0;
+            } else if (this.speed > -0.2 && this.speed < 0) {
+                this.speed = 0;
+            }
+
+            if (this.sector) {
+                this.z = this.sector.floor;
+            }
+            var rotation = this.rotation + this.direction * this.rotationSpeed * _softwareRenderer.deltaTime;
+
+            if (rotation > 360) {
+                rotation = 0;
+            } else if (rotation < 0) {
+                rotation = rotation + 360;
+            }
+
+            // const moveStep = this.moving * this.moveSpeed;
+            var moveStep = this.speed;
+            var radians = (0, _softwareRenderer.toRadians)(rotation);
+            var moveX = Math.cos(radians) * moveStep;
+            var moveY = Math.sin(radians) * moveStep;
+            this.velocity.x = moveX * _softwareRenderer.deltaTime;
+            this.velocity.y = moveY * _softwareRenderer.deltaTime;
+
+            // const x = this.x + (moveX * deltaTime);
+            // const y = this.y + (moveY * deltaTime);
+
+            // this.x = x;
+            // this.y = y;
+            this.rotation = rotation;
+        }
+    }]);
+
+    return Player;
+}(_softwareRenderer.GameObject);
+
+exports.default = Player;
 
 /***/ }),
 /* 16 */

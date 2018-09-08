@@ -62,8 +62,17 @@ export default class Player extends GameObject {
                 this.speed --;
             }
         }
-        else {
+        else if(this.speed != 0) {
             this.speed *= this.friction;
+        }
+
+        this.speed = Number(parseFloat(this.speed).toFixed(2));
+
+        if(this.speed < 0.2 && this.speed > 0){
+            this.speed = 0
+        }
+        else if(this.speed > -0.2 && this.speed < 0) {
+            this.speed = 0;
         }
 
         if(this.sector){
@@ -83,11 +92,14 @@ export default class Player extends GameObject {
         const radians = toRadians(rotation);
         const moveX = Math.cos(radians) * moveStep;
         const moveY = Math.sin(radians) * moveStep;
-        const x = this.x + (moveX * deltaTime);
-        const y = this.y + (moveY * deltaTime);
+        this.velocity.x = (moveX * deltaTime);
+        this.velocity.y = (moveY * deltaTime);
 
-        this.x = x;
-        this.y = y;
+        // const x = this.x + (moveX * deltaTime);
+        // const y = this.y + (moveY * deltaTime);
+
+        // this.x = x;
+        // this.y = y;
         this.rotation = rotation;
     }
 }
